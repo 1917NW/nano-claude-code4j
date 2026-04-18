@@ -2,6 +2,7 @@ package com.lxy.model;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.lxy.common.JsonKeyConverter;
 import com.lxy.http.CurlLoggingInterceptor;
 import com.lxy.message.Message;
 import com.lxy.tools.Tool;
@@ -38,8 +39,9 @@ public class ChatModel {
                 .tools(toolList)
                 .stream(false)
                 .build();
-
-        RequestBody body = RequestBody.create(JSONUtil.toJsonStr(chatRequest), MediaType.parse("application/json;charset=utf-8"));
+        String camelJsoStr = JSONUtil.toJsonStr(chatRequest);
+        String underlineJsonStr = JsonKeyConverter.camelToUnderlineJson(camelJsoStr);
+        RequestBody body = RequestBody.create(underlineJsonStr, MediaType.parse("application/json;charset=utf-8"));
 
         Request request = new Request.Builder()
                 .url(baseUrl)
@@ -50,8 +52,9 @@ public class ChatModel {
 
         try (Response response = client.newCall(request).execute()) {
             if(Objects.nonNull(response.body())) {
-                String string = response.body().string();
-                result = JSONUtil.parseObj(string);
+                String underlineResult = response.body().string();
+                String camelResult = JsonKeyConverter.underlineToCamelJson(underlineResult);
+                result = JSONUtil.parseObj(camelResult);
             }}
         catch (IOException e) {
             throw new RuntimeException(e);

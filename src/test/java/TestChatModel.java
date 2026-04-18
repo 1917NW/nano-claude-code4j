@@ -17,11 +17,11 @@ public class TestChatModel {
     public void testChatModel() {
         String model = "deepseek-chat";
         String baseUrl = "https://api.deepseek.com/chat/completions";
-        String apiKey = "sk-67003ab0ca6542efb8a488da3de79874";
+        String apiKey = System.getProperty("api.key");
         ChatModel chatModel = new ChatModel(model, baseUrl, apiKey);
 
         UserMessage userMessage = new UserMessage("今天北京的天气怎么样");
-        JSONObject result = chatModel.chat(Collections.singletonList(userMessage), null);
+        JSONObject result = chatModel.chat(Collections.singletonList(userMessage), ToolManager.getTools());
         System.out.println(JSONUtil.toJsonStr(result));
 
     }
