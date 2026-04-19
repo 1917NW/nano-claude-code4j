@@ -1,5 +1,6 @@
 package com.lxy.message;
 
+
 public class AbstractMessage implements Message{
 
     public String role;

@@ -26,8 +26,8 @@ public class ChatModel {
         this.apiKey = apiKey;
     }
 
-    public JSONObject chat(List<Message> messageList, List<Tool> toolList) {
-        JSONObject result = new JSONObject();
+    public NonStreamChatResponse chat(List<Message> messageList, List<Tool> toolList) {
+        NonStreamChatResponse result = new NonStreamChatResponse();
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new CurlLoggingInterceptor())
                 .build();
@@ -54,7 +54,7 @@ public class ChatModel {
             if(Objects.nonNull(response.body())) {
                 String underlineResult = response.body().string();
                 String camelResult = JsonKeyConverter.underlineToCamelJson(underlineResult);
-                result = JSONUtil.parseObj(camelResult);
+                result = JSONUtil.toBean(camelResult, NonStreamChatResponse.class);
             }}
         catch (IOException e) {
             throw new RuntimeException(e);

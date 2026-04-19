@@ -3,7 +3,9 @@ package com.lxy.tools.impl;
 
 import com.lxy.tools.annoation.FunctionCall;
 import com.lxy.tools.annoation.ParamProperty;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class WeatherTool {
 
     @FunctionCall(name = "get_weather", description = "查询某个城市的天气")
