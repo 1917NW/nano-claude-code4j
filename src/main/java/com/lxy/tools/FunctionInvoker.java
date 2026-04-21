@@ -7,11 +7,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+
 import java.lang.reflect.Method;
 
 // 假定工具没有状态
-@Slf4j
+
 @NoArgsConstructor
+@Slf4j
 public class FunctionInvoker {
     private Object target;
     private Method method;
@@ -36,7 +38,7 @@ public class FunctionInvoker {
         try {
             return method.invoke(target, args);
         }catch (Exception e){
-            log.error(e.getMessage(), e);
+           log.error(e.getMessage(), e);
         }
         return null;
     }
