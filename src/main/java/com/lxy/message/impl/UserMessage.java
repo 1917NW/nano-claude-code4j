@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserMessage extends AbstractMessage {
 
-    String content;
-
     public UserMessage(String content) {
         this.content = content;
         this.role = RoleType.User.getRole();

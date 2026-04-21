@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 public class ToolMessage extends AbstractMessage {
     String toolCallId;
-    Object content;
 
     public ToolMessage(String toolCallId, Object content) {
         this.toolCallId = toolCallId;

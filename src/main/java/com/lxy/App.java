@@ -1,13 +1,15 @@
 package com.lxy;
 
 import com.lxy.common.CurrentEnvironment;
+import com.lxy.message.Message;
 import com.lxy.state.ChatState;
 
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Scanner;
 
 /**
- * Hello world!
+ *
  *
  */
 public class App {
@@ -22,6 +24,10 @@ public class App {
             }
             ChatState chatState = new ChatState(query);
             AgentLoop.agentLoop(chatState);
+            List<Message> messageList = chatState.getMessageList();
+            Message message = messageList.get(messageList.size() - 1);
+            System.out.println("(answer)>>>" + message.getContent());
+
         }
         System.out.println("---END---");
     }
