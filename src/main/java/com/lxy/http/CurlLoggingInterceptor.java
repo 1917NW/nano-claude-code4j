@@ -1,10 +1,13 @@
 package com.lxy.http;
 
+import com.lxy.utils.PrintUtils;
 import okhttp3.*;
 import okio.Buffer;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+
+import static com.lxy.utils.PrintUtils.printLongString;
 
 public class CurlLoggingInterceptor implements Interceptor {
     

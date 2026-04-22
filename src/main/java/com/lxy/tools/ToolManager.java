@@ -5,6 +5,7 @@ import cn.hutool.json.JSONUtil;
 import com.lxy.message.impl.AssistantMessage;
 import com.lxy.tools.annoation.FunctionCall;
 import com.lxy.tools.annoation.ParamProperty;
+import com.lxy.tools.impl.LocalFileTool;
 import com.lxy.tools.impl.WeatherTool;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,6 +25,7 @@ public class ToolManager {
 
     static {
         addTool(WeatherTool.class);
+        addTool(LocalFileTool.class);
     }
 
 
@@ -71,7 +73,6 @@ public class ToolManager {
                     functionTool.setFunction(function);
                     toolMap.put(functionCall.name(), functionTool);
 
-                    // TODO 加入invoker
                     FunctionInvoker functionInvoker = new FunctionInvoker(instance, method, functionArg);
                     functionInvokeMap.put(functionCall.name(), functionInvoker);
                 }
@@ -94,7 +95,6 @@ public class ToolManager {
         return tools;
     }
 
-    // TODO 统一入参
     public static Object executeTool(ToolExecuteRequest toolExecuteRequest) {
 
         String toolName = toolExecuteRequest.toolName;
