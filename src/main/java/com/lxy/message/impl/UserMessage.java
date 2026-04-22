@@ -13,6 +13,6 @@ public class UserMessage extends AbstractMessage {
 
     public UserMessage(String content) {
         this.content = content;
-        this.role = RoleType.User.getRole();
+        this.role = RoleType.USER.getRole();
     }
 }

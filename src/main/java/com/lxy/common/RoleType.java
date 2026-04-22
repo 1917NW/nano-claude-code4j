@@ -7,9 +7,10 @@ import lombok.Getter;
 @Getter
 public enum RoleType {
 
-    User("user"),
-    System("system"),
-    Assistant("assistant"),;
+    USER("user"),
+    SYSTEM("system"),
+    ASSISTANT("assistant"),
+    TOOL("tool");
     String role;
 
 }

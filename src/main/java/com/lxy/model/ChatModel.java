@@ -11,6 +11,7 @@ import okhttp3.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class ChatModel {
 
@@ -30,6 +31,10 @@ public class ChatModel {
         NonStreamChatResponse result = new NonStreamChatResponse();
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new CurlLoggingInterceptor())
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(5, TimeUnit.MINUTES)
+                .writeTimeout(5, TimeUnit.MINUTES)
+                .callTimeout(10, TimeUnit.MINUTES)
                 .build();
 
 

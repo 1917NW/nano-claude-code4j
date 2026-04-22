@@ -12,6 +12,6 @@ public class ToolMessage extends AbstractMessage {
     public ToolMessage(String toolCallId, Object content) {
         this.toolCallId = toolCallId;
         this.content = content;
-        this.role = "tool";
+        this.role = RoleType.TOOL.getRole();
     }
 }

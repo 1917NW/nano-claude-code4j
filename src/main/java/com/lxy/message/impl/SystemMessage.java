@@ -6,10 +6,8 @@ import com.lxy.message.Message;
 
 public class SystemMessage extends AbstractMessage {
 
-    String content;
-
     public SystemMessage(String content) {
         this.content = content;
-        this.role = RoleType.System.getRole();
+        this.role = RoleType.SYSTEM.getRole();
     }
 }

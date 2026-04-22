@@ -1,6 +1,7 @@
 package com.lxy.state;
 
 import com.lxy.message.Message;
+import com.lxy.message.impl.SystemMessage;
 import com.lxy.message.impl.UserMessage;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,9 +21,13 @@ public class ChatState {
         turnCount = 0;
     }
 
-    public ChatState(String userQuery){
+    public ChatState(String systemPrompt){
         this();
-        messageList.add(new UserMessage(userQuery));
+        messageList.add(new SystemMessage(systemPrompt));
+    }
+
+    public void addMessage(Message message){
+        messageList.add(message);
     }
 
     public void increaseTurnCount(){
