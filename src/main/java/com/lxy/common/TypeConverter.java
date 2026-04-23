@@ -11,7 +11,7 @@ public class TypeConverter {
 
         switch (type) {
             case "string": return value.toString();
-            case "number": return Integer.parseInt(value.toString());
+            case "integer": return Integer.parseInt(value.toString());
             default: return value;
         }
     }

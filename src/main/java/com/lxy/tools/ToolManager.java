@@ -52,16 +52,21 @@ public class ToolManager {
                         if (parameter.isAnnotationPresent(ParamProperty.class)) {
                             ParamProperty paramProperty = parameter.getAnnotation(ParamProperty.class);
                             FunctionTool.Property property = new FunctionTool.Property();
-                            property.setType(paramProperty.type());
+                            String type = "";
+                            if(parameter.getType().equals(String.class)){
+                                type = "string";
+                            } else if(parameter.getType().equals(Integer.class)){
+                                type = "integer";
+                            }
+                            property.setType(type);
                             property.setDescription(paramProperty.description());
-                            propertyMap.put(paramProperty.name(), property);
+                            propertyMap.put(parameter.getName(), property);
 
                             if (paramProperty.required()) {
-                                required.add(paramProperty.name());
+                                required.add(parameter.getName());
                             }
 
-                            functionArg[i++] = new FunctionInvoker.FunctionArg(paramProperty.name(), paramProperty.type());
-                            ;
+                            functionArg[i++] = new FunctionInvoker.FunctionArg(parameter.getName(), type);
                         }
 
                     }

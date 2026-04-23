@@ -69,6 +69,9 @@
                     <source>1.8</source> <!-- 源代码JDK版本 -->
                     <target>1.8</target> <!-- 目标字节码JDK版本 -->
                     <encoding>UTF-8</encoding>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
 

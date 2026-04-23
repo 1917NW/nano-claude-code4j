@@ -21,7 +21,7 @@ public class LocalFileTool {
     private final int readLineLimits = 5000;
 
     @FunctionCall(name = "read_file", description = "读取某个文件的内容")
-    public String readFile(@ParamProperty(type = "string", description = "文件名", required = true, name = "fileName") String fileName){
+    public String readFile(@ParamProperty(description = "文件名", required = true) String fileName){
         String safePath = safePath(fileName);
         File file = new File(safePath);
         if (!file.exists()){
@@ -39,8 +39,8 @@ public class LocalFileTool {
     }
 
     @FunctionCall(name = "write_file", description = "写入内容到某个文件")
-    public String writeFile(@ParamProperty(type = "string", description = "文件名", required = true, name = "fileName")String fileName,
-                            @ParamProperty(type = "string", description = "文件内容", required = true, name = "content")String content){
+    public String writeFile(@ParamProperty(description = "文件名", required = true)String fileName,
+                            @ParamProperty(description = "文件内容", required = true)String content){
         try {
             Path path = Paths.get(safePath(fileName));
             Files.write(path, content.getBytes(StandardCharsets.UTF_8));
@@ -53,8 +53,8 @@ public class LocalFileTool {
     }
 
     @FunctionCall(name = "edit_file", description = "编辑某个文件的内容")
-    public String editFile(@ParamProperty(type = "string", description = "文件名", required = true, name = "fileName")String fileName,
-                           @ParamProperty(type = "string", description = "替换后的完整文本", required = true, name = "newText")String newText){
+    public String editFile(@ParamProperty(description = "文件名", required = true)String fileName,
+                           @ParamProperty(description = "替换后的完整文本", required = true)String newText){
         try{
             String safePath = safePath(fileName);
             File file = new File(safePath);
