@@ -10,7 +10,7 @@ import java.util.List;
 public class TodoTool {
 
     @FunctionCall(name = "todo_write", description = "新建或者更新todo")
-    public String todoWrite(@ParamProperty(description = "Todo条目", required = true) List<TodoItem> items) {
+    public String todoWrite(@ParamProperty(description = "Todo条目") List<List<TodoItem>> todoItems) {
         return StrUtil.EMPTY;
     }
 }

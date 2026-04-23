@@ -27,7 +27,7 @@ public class ChatModel {
         this.apiKey = apiKey;
     }
 
-    public NonStreamChatResponse chat(List<Message> messageList, List<Tool> toolList) {
+    public NonStreamChatResponse chat(List<Message> messageList, List<JSONObject> toolList) {
         NonStreamChatResponse result = new NonStreamChatResponse();
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new CurlLoggingInterceptor())

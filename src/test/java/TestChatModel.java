@@ -40,8 +40,8 @@ public class TestChatModel {
 
     @Test
     public void testTool() {
-        List<Tool> tools = ToolManager.getTools();
-        for(Tool tool : tools){
+        List<JSONObject> tools = ToolManager.getTools();
+        for(JSONObject tool : tools){
             System.out.println(JSONUtil.toJsonStr(tool));
         }
 

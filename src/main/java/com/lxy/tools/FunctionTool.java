@@ -1,5 +1,6 @@
 package com.lxy.tools;
 
+import cn.hutool.json.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,7 @@ public class FunctionTool extends Tool {
     static class Function{
         String name;
         String description;
-        FunctionParam parameters;
+        JSONObject parameters;
 
     }
 

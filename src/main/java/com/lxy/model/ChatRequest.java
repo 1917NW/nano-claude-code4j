@@ -1,5 +1,6 @@
 package com.lxy.model;
 
+import cn.hutool.json.JSONObject;
 import com.lxy.message.Message;
 import com.lxy.tools.Tool;
 import lombok.AllArgsConstructor;
@@ -17,5 +18,5 @@ public class ChatRequest {
     private String model;
     private List<Message> messages;
     private boolean stream;
-    private List<Tool> tools;
+    private List<JSONObject> tools;
 }

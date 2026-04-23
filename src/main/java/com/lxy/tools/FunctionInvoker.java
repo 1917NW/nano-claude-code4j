@@ -1,6 +1,7 @@
 package com.lxy.tools;
 
 import cn.hutool.json.JSONObject;
+import com.lxy.common.StringCaseConverter;
 import com.lxy.common.TypeConverter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 
 // 假定工具没有状态
 @NoArgsConstructor
@@ -16,21 +18,22 @@ import java.lang.reflect.Method;
 public class FunctionInvoker {
     private Object target;
     private Method method;
-    private FunctionArg[] argInfo;
 
 
-    public FunctionInvoker(Object target, Method method, FunctionArg[] argInfo) {
+
+    public FunctionInvoker(Object target, Method method) {
         this.target = target;
         this.method = method;
-        this.argInfo = argInfo;
     }
 
     public Object invoke(JSONObject param)  {
-        Object[] args = new Object[argInfo.length];
-        for (int i = 0; i < argInfo.length; i++) {
-            FunctionArg functionArg = argInfo[i];
-            args[i] = TypeConverter.convert(param.get(functionArg.name), functionArg.type );
+        Parameter[] parameters = method.getParameters();
+        Object[] args = new Object[parameters.length];
+        for (int i = 0; i < parameters.length; i++) {
+            Parameter parameter = parameters[i];
+            args[i] = param.get(StringCaseConverter.camelToSnake(parameter.getName()));
         }
+
         return invoke(args);
     }
     public Object invoke(Object[] args) {
@@ -48,5 +51,9 @@ public class FunctionInvoker {
     static class FunctionArg{
         String name;
         String type;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(StringCaseConverter.camelToSnake("fileName"));
     }
 }
