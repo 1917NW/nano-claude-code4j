@@ -28,7 +28,7 @@ public class AgentLoop {
     }
 
     public static void agentLoop(ChatState chatState){
-
+        int rounds_since_todo = 0;
         List<Message> messageList = chatState.getMessageList();
         while(true){
             NonStreamChatResponse chatResponse = chatModel.chat(messageList, ToolManager.getTools());
@@ -42,9 +42,18 @@ public class AgentLoop {
 
             List<AssistantMessage.ToolCall> toolCalls = assistantMessage.getToolCalls();
             if(CollectionUtil.isNotEmpty(toolCalls)){
-                toolCalls.forEach(toolCall -> {
+                for(AssistantMessage.ToolCall toolCall : toolCalls){
+                    if("todo_write".equals(toolCall.getFunction().getName())){
+                        rounds_since_todo = 0;
+                    } else {
+                        rounds_since_todo++;
+                    }
                     messageList.add(new ToolMessage(toolCall.getId(), ToolManager.executeToolCall(toolCall)));
-                });
+                }
+            }
+
+            if(rounds_since_todo >= 3){
+                messageList.add(new UserMessage("<reminder>记得更新你的todo计划</reminder>"));
             }
 
             chatState.increaseTurnCount();

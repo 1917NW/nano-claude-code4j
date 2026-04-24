@@ -15,10 +15,12 @@ import java.util.Scanner;
  *
  */
 public class App {
+
+    public static String SYSTEM_PROMPT = String.format("你是一个工作在%s目录下的编程Agent，使用Todo工具来计划多步的任务，记得在开始之前标记将要执行的步骤为IN_PROGRESS，当完成后，标记该步骤为COMPLETED。尽量优先使用工具，而不是文字说明", CurrentEnvironment.WORK_DIR);
+
     public static void main( String[] args ) {
         initEnvironment();
-        String systemPrompt = String.format("你是一个工作在%s目录下的编程Agent，使用工具来解决问题。", CurrentEnvironment.WORK_DIR);
-        ChatState chatState = new ChatState(systemPrompt);
+        ChatState chatState = new ChatState(SYSTEM_PROMPT);
         while(true){
             System.out.print("(Enter exit to quit)>>>");
             Scanner scanner = new Scanner(System.in);

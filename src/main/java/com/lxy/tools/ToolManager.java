@@ -101,7 +101,7 @@ public class ToolManager {
 
     }
 
-    // TODO:1.Map参数没有解析 2.嵌套List和嵌套Map没有解析
+    // TODO:1.Map参数没有解析
     private static JSONObject propertyJson(Class<?> type, Type genericType, String description){
         JSONObject properties = new JSONObject();
 
