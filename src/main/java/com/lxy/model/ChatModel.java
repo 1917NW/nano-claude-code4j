@@ -65,6 +65,7 @@ public class ChatModel {
             throw new RuntimeException(e);
         }
 
+
         return result;
     }
 }

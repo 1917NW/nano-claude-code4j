@@ -3,6 +3,7 @@ package com.lxy.tools;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.lxy.common.JsonKeyConverter;
 import com.lxy.message.impl.AssistantMessage;
 import com.lxy.tools.annoation.FunctionCall;
 import com.lxy.tools.annoation.ObjectProperty;
@@ -206,7 +207,7 @@ public class ToolManager {
     public static Object executeToolCall(AssistantMessage.ToolCall toolCall) {
         ToolExecuteRequest toolExecuteRequest = new ToolExecuteRequest();
         toolExecuteRequest.setToolName(toolCall.getFunction().getName());
-        toolExecuteRequest.setFunctionParam(JSONUtil.parseObj(toolCall.getFunction().getArguments()));
+        toolExecuteRequest.setFunctionParam(JSONUtil.parseObj(JsonKeyConverter.underlineToCamelJson(toolCall.getFunction().getArguments())));
         return ToolManager.executeTool(toolExecuteRequest);
     }
 }

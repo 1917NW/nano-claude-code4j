@@ -14,7 +14,7 @@ public class TodoTool {
 
     List<TodoItem> todoItems;
 
-    @FunctionCall(name = "todo_write", description = "新建或者更新todo")
+    @FunctionCall(name = "todo_write", description = "新建或者全量更新todo计划列表")
     public String todoWrite(@ParamProperty(description = "Todo条目") List<TodoItem> todoItems) {
         if(CollectionUtil.isEmpty(todoItems)){
             return "新建或者更新条目失败";
@@ -43,8 +43,8 @@ public class TodoTool {
         if(inProgressItem > 1){
             return "某一时间只能有一个任务处于IN_PROGRESS状态";
         }
-        todoItems = validated;
-        return StrUtil.EMPTY;
+        this.todoItems = validated;
+        return render();
     }
 
     private String render(){
@@ -68,5 +68,10 @@ public class TodoTool {
         }
 
         return String.join("\n", lines);
+    }
+
+    public String todoTest( List<List<TodoItem>> todoItems){
+        System.out.println("调用成功");
+        return "";
     }
 }

@@ -16,7 +16,7 @@ import java.util.Scanner;
  */
 public class App {
 
-    public static String SYSTEM_PROMPT = String.format("你是一个工作在%s目录下的编程Agent，使用Todo工具来计划多步的任务，记得在开始之前标记将要执行的步骤为IN_PROGRESS，当完成后，标记该步骤为COMPLETED。尽量优先使用工具，而不是文字说明", CurrentEnvironment.WORK_DIR);
+    public static String SYSTEM_PROMPT = String.format("你是一个工作在%s目录下的编程Agent，如果是多步骤任务，请使用todo Tool进行规划，并及时更新规划的状态，记得在开始之前使用todo Tool将要执行的步骤标记为IN_PROGRESS，当完成该步骤后，使用todo Tool将该步骤标记为COMPLETED。尽量优先使用工具，而不是文字说明", CurrentEnvironment.WORK_DIR);
 
     public static void main( String[] args ) {
         initEnvironment();
