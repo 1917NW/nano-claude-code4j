@@ -22,7 +22,6 @@ public class App {
             "3.尽量优先使用工具，而不是文字说明。", CurrentEnvironment.WORK_DIR);
 
     public static void main( String[] args ) {
-        initEnvironment();
         ChatState chatState = new ChatState(SYSTEM_PROMPT);
         while(true){
             System.out.print("(Enter exit to quit)>>>");
@@ -41,9 +40,5 @@ public class App {
 
         }
         System.out.println("---END---");
-    }
-
-    public static void initEnvironment(){
-        CurrentEnvironment.setWorkDir(Paths.get("").toAbsolutePath().toString());
     }
 }

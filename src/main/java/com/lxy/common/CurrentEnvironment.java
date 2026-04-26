@@ -2,9 +2,10 @@ package com.lxy.common;
 
 public class CurrentEnvironment {
 
-    public static String WORK_DIR = "";
+    public static String WORK_DIR;
 
-    public static void setWorkDir(String workDir) {
-        WORK_DIR = workDir;
+    static {
+        WORK_DIR = System.getProperty("user.dir");
     }
+
 }
