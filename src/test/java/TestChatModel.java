@@ -23,7 +23,7 @@ public class TestChatModel {
         ChatModel chatModel = new ChatModel(model, baseUrl, apiKey);
 
         UserMessage userMessage = new UserMessage("今天北京的天气怎么样");
-        NonStreamChatResponse result = chatModel.chat(Collections.singletonList(userMessage), ToolManager.getTools());
+        NonStreamChatResponse result = chatModel.chat(Collections.singletonList(userMessage), ToolManager.getSubTools());
         List<NonStreamChatResponse.Choice> choices = result.getChoices();
         if(Objects.nonNull(choices)){
             choices.forEach(choice -> {
@@ -40,7 +40,7 @@ public class TestChatModel {
 
     @Test
     public void testTool() {
-        List<JSONObject> tools = ToolManager.getTools();
+        List<JSONObject> tools = ToolManager.getSubTools();
         for(JSONObject tool : tools){
             System.out.println(JSONUtil.toJsonStr(tool));
         }

@@ -18,20 +18,12 @@ import java.util.List;
 
 public class AgentLoop {
 
-    static ChatModel chatModel;
-
-    static {
-        String model = "deepseek-chat";
-        String baseUrl = "https://api.deepseek.com/chat/completions";
-        String apiKey = System.getProperty("api.key");
-        chatModel = new ChatModel(model, baseUrl, apiKey);
-    }
 
     public static void agentLoop(ChatState chatState){
         int rounds_since_todo = 0;
         List<Message> messageList = chatState.getMessageList();
         while(true){
-            NonStreamChatResponse chatResponse = chatModel.chat(messageList, ToolManager.getTools());
+            NonStreamChatResponse chatResponse = ChatModel.instance.chat(messageList, ToolManager.getParentTools());
             AssistantMessage assistantMessage = chatResponse.getAssistantMessage();
             messageList.add(assistantMessage);
 

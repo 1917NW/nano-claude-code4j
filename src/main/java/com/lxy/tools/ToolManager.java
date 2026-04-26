@@ -9,6 +9,7 @@ import com.lxy.tools.annoation.FunctionCall;
 import com.lxy.tools.annoation.ObjectProperty;
 import com.lxy.tools.annoation.ParamProperty;
 import com.lxy.tools.impl.LocalFileTool;
+import com.lxy.tools.impl.TaskTool;
 import com.lxy.tools.impl.TodoTool;
 import com.lxy.tools.impl.WeatherTool;
 import lombok.extern.slf4j.Slf4j;
@@ -21,19 +22,25 @@ import java.util.*;
 public class ToolManager {
 
     // <toolName, toolDescription>
-    static List<JSONObject> toolList = new ArrayList<>();
+    static List<JSONObject> parentToolList = new ArrayList<>();
+
+    static List<JSONObject> subToolList = new ArrayList<>();
 
     // <toolName, toolInvoke>
     static Map<String, FunctionInvoker> functionInvokeMap = new HashMap<>();
 
     static {
-        addTool(WeatherTool.class);
-        addTool(LocalFileTool.class);
-        addTool(TodoTool.class);
+        addTool(subToolList, WeatherTool.class);
+        addTool(subToolList, LocalFileTool.class);
+
+//        addTool(parentToolList, WeatherTool.class);
+//        addTool(parentToolList, LocalFileTool.class);
+        addTool(parentToolList, TodoTool.class);
+        addTool(parentToolList, TaskTool.class);
     }
 
 
-    private static void addTool(Class<?> ToolClazz)  {
+    private static void addTool(List<JSONObject> toolList, Class<?> ToolClazz)  {
         try {
             Method[] methods = ToolClazz.getMethods();
             Object instance = ToolClazz.newInstance();
@@ -191,8 +198,12 @@ public class ToolManager {
 
 
 
-    public static List<JSONObject> getTools() {
-        return toolList;
+    public static List<JSONObject> getParentTools() {
+        return parentToolList;
+    }
+
+    public static List<JSONObject> getSubTools() {
+        return subToolList;
     }
 
     public static Object executeTool(ToolExecuteRequest toolExecuteRequest) {

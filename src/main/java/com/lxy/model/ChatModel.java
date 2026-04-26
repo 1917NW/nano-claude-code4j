@@ -15,6 +15,16 @@ import java.util.concurrent.TimeUnit;
 
 public class ChatModel {
 
+    public static ChatModel instance;
+
+    static {
+        String model = "deepseek-chat";
+        String baseUrl = "https://api.deepseek.com/chat/completions";
+        String apiKey = System.getProperty("api.key");
+        instance = new ChatModel(model, baseUrl, apiKey);
+    }
+
+
     private String model;
 
     private String baseUrl;
