@@ -33,8 +33,7 @@ public class ToolManager {
         addTool(subToolList, WeatherTool.class);
         addTool(subToolList, LocalFileTool.class);
 
-//        addTool(parentToolList, WeatherTool.class);
-//        addTool(parentToolList, LocalFileTool.class);
+
         addTool(parentToolList, TodoTool.class);
         addTool(parentToolList, TaskTool.class);
     }

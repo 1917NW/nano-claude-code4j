@@ -40,7 +40,7 @@ public class SkillRegistry {
                 .collect(Collectors.toList());
     }
 
-    public static SkillBody getSkillBody(String skillName){
+    public static String getSkillBody(String skillName){
         SkillDetail skillDetail = skills.get(skillName);
         return skillDetail == null ? null : skillDetail.getSkillBody();
     }

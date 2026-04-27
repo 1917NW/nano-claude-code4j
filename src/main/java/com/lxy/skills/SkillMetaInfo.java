@@ -10,5 +10,4 @@ public class SkillMetaInfo {
 
     private String name;
     private String description;
-    private Map<String, String> attributes = new LinkedHashMap<>();
 }

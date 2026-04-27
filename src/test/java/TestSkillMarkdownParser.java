@@ -17,8 +17,8 @@ public class TestSkillMarkdownParser {
 
         Assert.assertEquals("pdf", detail.getMetaInfo().getName());
         Assert.assertTrue(detail.getMetaInfo().getDescription().contains("Process PDF files"));
-        Assert.assertTrue(detail.getSkillBody().getMarkdown().startsWith("# PDF Processing Skill"));
-        Assert.assertFalse(detail.getSkillBody().getMarkdown().startsWith("---"));
+        Assert.assertTrue(detail.getSkillBody().startsWith("# PDF Processing Skill"));
+        Assert.assertFalse(detail.getSkillBody().startsWith("---"));
     }
 
     @Test
@@ -28,7 +28,7 @@ public class TestSkillMarkdownParser {
         SkillDetail detail = SkillMarkdownParser.parse(markdown);
 
         Assert.assertNull(detail.getMetaInfo().getName());
-        Assert.assertEquals(markdown, detail.getSkillBody().getMarkdown());
+        Assert.assertEquals(markdown, detail.getSkillBody());
     }
 
     private String readResource(String path) throws IOException {

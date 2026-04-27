@@ -27,7 +27,7 @@ public class App {
             System.out.print("(Enter exit to quit)>>>");
             Scanner scanner = new Scanner(System.in);
             String query = scanner.nextLine();
-            if(query.equals("exit")){
+            if(query.equals("exit") || query.equals("q")){
                 break;
             }
             chatState.addMessage(new UserMessage(query));

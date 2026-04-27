@@ -6,5 +6,5 @@ import lombok.Data;
 public class SkillDetail {
 
     private SkillMetaInfo metaInfo;
-    private SkillBody skillBody;
+    private String skillBody;
 }

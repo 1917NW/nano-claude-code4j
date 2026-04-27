@@ -37,7 +37,7 @@ public final class SkillMarkdownParser {
 
         SkillDetail detail = new SkillDetail();
         detail.setMetaInfo(metaInfo);
-        detail.setSkillBody(new SkillBody(body));
+        detail.setSkillBody(body);
         return detail;
     }
 
@@ -63,7 +63,6 @@ public final class SkillMarkdownParser {
         }
 
         SkillMetaInfo metaInfo = new SkillMetaInfo();
-        metaInfo.setAttributes(attributes);
         metaInfo.setName(attributes.get("name"));
         metaInfo.setDescription(attributes.get("description"));
         return metaInfo;
