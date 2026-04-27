@@ -8,10 +8,7 @@ import com.lxy.message.impl.AssistantMessage;
 import com.lxy.tools.annoation.FunctionCall;
 import com.lxy.tools.annoation.ObjectProperty;
 import com.lxy.tools.annoation.ParamProperty;
-import com.lxy.tools.impl.LocalFileTool;
-import com.lxy.tools.impl.TaskTool;
-import com.lxy.tools.impl.TodoTool;
-import com.lxy.tools.impl.WeatherTool;
+import com.lxy.tools.impl.*;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -32,10 +29,11 @@ public class ToolManager {
     static {
         addTool(subToolList, WeatherTool.class);
         addTool(subToolList, LocalFileTool.class);
-
+        addTool(subToolList, BashTool.class);
 
         addTool(parentToolList, TodoTool.class);
         addTool(parentToolList, TaskTool.class);
+        addTool(parentToolList, SkillTool.class);
     }
 
 

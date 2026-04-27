@@ -33,7 +33,6 @@ public class BashTool {
         }
 
         try {
-
             ProcessBuilder processBuilder = new ProcessBuilder("bash", "-c", command);
             processBuilder.directory(new File(CurrentEnvironment.WORK_DIR));
             processBuilder.redirectErrorStream(true);
@@ -63,7 +62,7 @@ public class BashTool {
     }
 
     public static void main(String[] args) {
-        String echoHello = new BashTool().runBash("echo hello");
+        String echoHello = new BashTool().runBash("rm -rf");
         System.out.println(echoHello);
     }
 }

@@ -8,10 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,6 +35,20 @@ public class SkillRegistry {
                 .map(SkillDetail::getMetaInfo)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+    }
+
+    public static String getSkillDescription(){
+        List<SkillMetaInfo> skillMetaInfos = getSkillMetaInfo();
+        if(CollectionUtil.isEmpty(skillMetaInfos)){
+            return "没有可用的Skills";
+        }
+
+        List<String> lines = new ArrayList<>();
+        for(SkillMetaInfo skillMetaInfo: skillMetaInfos){
+            lines.add(String.format("  - %s: %s", skillMetaInfo.getName(), skillMetaInfo.getDescription()));
+        }
+
+        return String.join("\n", lines);
     }
 
     public static String getSkillBody(String skillName){
