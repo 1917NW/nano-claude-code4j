@@ -20,14 +20,11 @@ public class SkillRegistry {
     // 项目级Skill加载，工作目录/.claude/skills
     private static final String PROJECT_SKILLS_RESOURCE_DIR = "/.claude/skills";
 
-    // TODO: 系统级Skill加载
-
-    // TODO: 插件Skill加载
-
     private static final String SKILL_FILE_NAME = "SKILL.md";
 
     static {
-        skills = loadSkills();
+        skills = new HashMap<>();
+        loadSkills();
     }
 
     public static List<SkillMetaInfo> getSkillMetaInfo(){
@@ -56,28 +53,35 @@ public class SkillRegistry {
         return skillDetail == null ? null : skillDetail.getSkillBody();
     }
 
-    public static Map<String, SkillDetail> loadSkills() {
-        Map<String, SkillDetail> loadedSkills = new HashMap<>();
-        List<Path> skillFiles = findSkillFiles();
+    public static void loadSkills() {
+        // 加载用户级别的Skill
+        loadSkills(System.getProperty("user.home") + PROJECT_SKILLS_RESOURCE_DIR);
+
+        // 加载项目级别的Skill
+        loadSkills(System.getProperty("user.dir") + PROJECT_SKILLS_RESOURCE_DIR);
+
+        // TODO: 加载插件Skill <plugin>/skills/<skill-name>/SKILL.md
+    }
+
+    private static void loadSkills(String skillDirPath){
+        List<Path> skillFiles = findSkillFilesByPath(skillDirPath);
         if(CollectionUtil.isEmpty(skillFiles)){
-            return loadedSkills;
+            return;
         }
 
         for (Path skillPath : skillFiles) {
             SkillDetail detail = parseSkillFile(skillPath);
             SkillMetaInfo metaInfo = detail.getMetaInfo();
             if (metaInfo != null && metaInfo.getName() != null && !metaInfo.getName().trim().isEmpty()) {
-                loadedSkills.put(metaInfo.getName(), detail);
+                skills.put(metaInfo.getName(), detail);
             }
         }
-        return loadedSkills;
     }
 
-    private static List<Path> findSkillFiles() {
-        Path skillsDir = Paths.get(System.getProperty("user.dir") + PROJECT_SKILLS_RESOURCE_DIR);
+    private static List<Path> findSkillFilesByPath(String dirPath){
+        Path skillsDir = Paths.get(dirPath);
 
         try (Stream<Path> stream = Files.walk(skillsDir)) {
-
             return stream
                     .filter(Files::isRegularFile)
                     .filter(path -> SKILL_FILE_NAME.equals(path.getFileName().toString()))
@@ -86,7 +90,6 @@ public class SkillRegistry {
             log.info("查找Skill文件失败, e:{}", e.getMessage());
         }
         return null;
-
     }
 
     private static SkillDetail parseSkillFile(Path skillPath) {
