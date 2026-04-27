@@ -23,7 +23,7 @@ public class SkillRegistry {
     private static final String SKILL_FILE_NAME = "SKILL.md";
 
     static {
-        skills = new HashMap<>();
+        skills = new LinkedHashMap<>();
         loadSkills();
     }
 
