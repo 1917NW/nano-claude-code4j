@@ -21,10 +21,6 @@ public class ChatState {
         turnCount = 0;
     }
 
-    public ChatState(String systemPrompt){
-        this();
-        messageList.add(new SystemMessage(systemPrompt));
-    }
 
     public void addMessage(Message message){
         messageList.add(message);

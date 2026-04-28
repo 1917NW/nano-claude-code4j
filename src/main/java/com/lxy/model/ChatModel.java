@@ -1,14 +1,17 @@
 package com.lxy.model;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.lxy.common.JsonKeyConverter;
 import com.lxy.http.CurlLoggingInterceptor;
 import com.lxy.message.Message;
+import com.lxy.message.impl.SystemMessage;
 import com.lxy.tools.Tool;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -37,20 +40,25 @@ public class ChatModel {
         this.apiKey = apiKey;
     }
 
-    public NonStreamChatResponse chat(List<Message> messageList, List<JSONObject> toolList) {
+    public NonStreamChatResponse chat(String systemPrompt, List<Message> messageList, List<JSONObject> toolList) {
         NonStreamChatResponse result = new NonStreamChatResponse();
         OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(new CurlLoggingInterceptor())
+//                .addInterceptor(new CurlLoggingInterceptor())
                 .connectTimeout(1, TimeUnit.MINUTES)
                 .readTimeout(5, TimeUnit.MINUTES)
                 .writeTimeout(5, TimeUnit.MINUTES)
                 .callTimeout(10, TimeUnit.MINUTES)
                 .build();
 
+        List<Message> messages = new ArrayList<>();
+        messages.add(new SystemMessage(systemPrompt));
+        if(CollectionUtil.isNotEmpty(messageList)) {
+            messages.addAll(messageList);
+        }
 
         ChatRequest chatRequest = ChatRequest.builder()
                 .model(model)
-                .messages(messageList)
+                .messages(messages)
                 .tools(toolList)
                 .stream(false)
                 .build();

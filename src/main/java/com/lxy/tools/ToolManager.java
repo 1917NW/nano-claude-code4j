@@ -32,7 +32,7 @@ public class ToolManager {
         addTool(subToolList, BashTool.class);
 
         addTool(parentToolList, TodoTool.class);
-        addTool(parentToolList, TaskTool.class);
+        addTool(parentToolList, SubAgentTool.class);
         addTool(parentToolList, SkillTool.class);
     }
 
