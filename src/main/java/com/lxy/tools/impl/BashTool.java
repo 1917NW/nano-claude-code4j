@@ -1,5 +1,6 @@
 package com.lxy.tools.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.lxy.common.CurrentEnvironment;
 import com.lxy.tools.annoation.FunctionCall;
 import com.lxy.tools.annoation.ParamProperty;
@@ -28,12 +29,13 @@ public class BashTool {
     }
     @FunctionCall(name = "run_bash", description = "执行一条shell命令")
     public String runBash(@ParamProperty(description = "shell命令") String command) {
-        if(dangerousCommands.contains(command) || command.contains("rm") || command.contains("sudo")){
+        String trimCommand = StrUtil.trim(command);
+        if(dangerousCommands.contains(trimCommand) || trimCommand.startsWith("rm") || trimCommand.startsWith("sudo")|| trimCommand.startsWith("cd")){
             return String.format("Error: 危险的命令:%s，已经被拦截", command);
         }
 
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder("bash", "-c", command);
+            ProcessBuilder processBuilder = new ProcessBuilder("bash", "-c", trimCommand);
             processBuilder.directory(new File(CurrentEnvironment.WORK_DIR));
             processBuilder.redirectErrorStream(true);
 
