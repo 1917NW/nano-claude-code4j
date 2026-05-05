@@ -51,7 +51,10 @@ public class ChatModel {
                 .build();
 
         List<Message> messages = new ArrayList<>();
-        messages.add(new SystemMessage(systemPrompt));
+        if(Objects.nonNull(systemPrompt)){
+            messages.add(new SystemMessage(systemPrompt));
+        }
+
         if(CollectionUtil.isNotEmpty(messageList)) {
             messages.addAll(messageList);
         }

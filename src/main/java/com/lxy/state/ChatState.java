@@ -13,6 +13,7 @@ import java.util.List;
 @Data
 public class ChatState {
     List<Message> messageList;
+    String currentPrompt;
     String transitionReason;
     Integer turnCount;
 
@@ -20,7 +21,6 @@ public class ChatState {
         messageList = new ArrayList<Message>();
         turnCount = 0;
     }
-
 
     public void addMessage(Message message){
         messageList.add(message);

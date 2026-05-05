@@ -19,6 +19,8 @@ public class BashTool {
 
     private static final List<String> dangerousCommands;
 
+    private static final List<String> forbiddenCommands;
+
     static {
         dangerousCommands = new ArrayList<>();
         dangerousCommands.add("rm -rf /");
@@ -26,13 +28,27 @@ public class BashTool {
         dangerousCommands.add("shutdown");
         dangerousCommands.add("reboot");
         dangerousCommands.add("> /dev/");
+
+        forbiddenCommands = new ArrayList<>();
+        forbiddenCommands.add("curl");
     }
     @FunctionCall(name = "run_bash", description = "执行一条shell命令")
     public String runBash(@ParamProperty(description = "shell命令") String command) {
         String trimCommand = StrUtil.trim(command);
-        if(dangerousCommands.contains(trimCommand) || trimCommand.startsWith("rm") || trimCommand.startsWith("sudo")|| trimCommand.startsWith("cd")){
-            return String.format("Error: 危险的命令:%s，已经被拦截", command);
+
+        for(String dangerousCommand : dangerousCommands){
+            if(trimCommand.startsWith(dangerousCommand) || dangerousCommand.contains(command)){
+                return String.format("Error: 危险的命令:%s，已经被拦截", command);
+            }
         }
+
+        for (String forbiddenCommand : forbiddenCommands) {
+            if(trimCommand.startsWith(forbiddenCommand) || forbiddenCommand.contains(trimCommand)){
+                return String.format("WARING: 禁止的命令:%s，你没有权限执行", forbiddenCommand);
+            }
+        }
+
+
 
         try {
             ProcessBuilder processBuilder = new ProcessBuilder("bash", "-c", trimCommand);

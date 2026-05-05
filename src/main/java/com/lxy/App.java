@@ -30,6 +30,7 @@ public class App {
             }
             UserMessage userMessage = new UserMessage(query);
             chatState.addMessage(userMessage);
+            chatState.setCurrentPrompt(query);
             if(CurrentEnvironment.log) {
                 System.out.printf("User:%s%n", JSONUtil.toJsonStr(userMessage));
             }
