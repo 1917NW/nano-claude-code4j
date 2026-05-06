@@ -1,4 +1,4 @@
-package com.lxy.enums;
+package com.lxy.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

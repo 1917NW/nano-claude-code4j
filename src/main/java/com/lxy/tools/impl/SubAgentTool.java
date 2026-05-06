@@ -3,7 +3,7 @@ package com.lxy.tools.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.lxy.common.CurrentEnvironment;
-import com.lxy.enums.FinishReasonEnum;
+import com.lxy.model.FinishReasonEnum;
 import com.lxy.message.Message;
 import com.lxy.message.impl.AssistantMessage;
 import com.lxy.message.impl.ToolMessage;
