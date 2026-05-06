@@ -40,8 +40,12 @@ public class CompactUtils {
         }
     }
 
+    public static int estimateTokens(List<Message> messageList){
+        return JSONUtil.toJsonStr(messageList).length()/4;
+    }
+
     // 如果工具调用的结果太大，则保存到文件系统并压缩
-    private String compactToolResult(String toolResult){
+    public static String compactToolResult(String toolResult){
         if(Objects.nonNull(toolResult) && toolResult.length()> TOOL_RESULT_MAX_LENGTH){
             // TODO 1.调用文件系统保存 2.压缩
             return StrUtil.EMPTY;
@@ -51,7 +55,7 @@ public class CompactUtils {
     }
 
     // 把旧的ToolResult替换成占位符
-    private void microCompact(List<Message> messageList){
+    public static void microCompact(List<Message> messageList){
         List<AssistantMessage> assistantToolCallMessageList = new ArrayList<>();
         Map<String, ToolMessage> toolMessageMap = new HashMap<>();
         for(Message message : messageList){
@@ -68,12 +72,12 @@ public class CompactUtils {
             }
         }
 
-        if(messageList.size() <= TOOL_RESULT_OFFSET){
+        if(assistantToolCallMessageList.size() <= TOOL_RESULT_OFFSET){
             return;
         }
 
         List<AssistantMessage> removeToolCallMessageList = new ArrayList<>();
-        int endIndex = messageList.size() - TOOL_RESULT_OFFSET;
+        int endIndex = assistantToolCallMessageList.size() - TOOL_RESULT_OFFSET;
         for(int i = 0; i < endIndex; i++){
             removeToolCallMessageList.add(assistantToolCallMessageList.get(i));
         }
@@ -103,14 +107,15 @@ public class CompactUtils {
     }
 
     // 压缩所有消息
-    private List<Message> compactContext(List<Message> messageList){
+    public static List<Message> compactContext(List<Message> messageList){
         try {
             String fileName = String.format(TRANSCRIPT_DIR + "/transcript_%d", System.currentTimeMillis());
             Path path = Paths.get(fileName);
             for (Message message : messageList) {
+                String line = JSONUtil.toJsonStr(message) + "\n";
                 Files.write(
                         path,
-                        JSONUtil.toJsonStr(message).getBytes(StandardCharsets.UTF_8),
+                        line.getBytes(StandardCharsets.UTF_8),
                         StandardOpenOption.CREATE,
                         StandardOpenOption.APPEND
                 );
@@ -121,11 +126,26 @@ public class CompactUtils {
 
         String content = JSONUtil.toJsonStr(messageList);
 
+
+
         String prompt = "总结这段对话，方便后续续接上下文，要求包含："
-                + "1.已经完成了什么 2.当前处于什么状态 3.做过哪些关键决策" +content;
-        NonStreamChatResponse summaryResponse = ChatModel.instance.chat(null, Collections.singletonList(new UserMessage(prompt)), ToolManager.getParentTools());
+                + "1.已经完成了什么 2.当前处于什么状态 3.做过哪些关键决策\n" + content;
+
+        UserMessage userMessage = new UserMessage(prompt);
+        if(CurrentEnvironment.log) {
+            System.out.printf("User:%s%n", JSONUtil.toJsonStr(userMessage));
+        }
+        NonStreamChatResponse summaryResponse = ChatModel.instance.chat(null, Collections.singletonList(userMessage), ToolManager.getParentTools());
         AssistantMessage assistantMessage = summaryResponse.getAssistantMessage();
 
-        return Collections.singletonList(new UserMessage(assistantMessage.getContent()));
+
+        List<Message> compactMessageList = new ArrayList<>();
+
+        if(Objects.isNull(assistantMessage) || StrUtil.isEmpty(assistantMessage.getContent())){
+            compactMessageList.add(new UserMessage("没有生成总结"));
+        } else {
+            compactMessageList.add(new UserMessage(assistantMessage.getContent()));
+        }
+        return compactMessageList;
     }
 }

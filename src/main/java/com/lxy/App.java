@@ -6,6 +6,7 @@ import com.lxy.message.Message;
 import com.lxy.message.impl.UserMessage;
 import com.lxy.skills.SkillRegistry;
 import com.lxy.state.ChatState;
+import com.lxy.utils.CompactUtils;
 
 import java.nio.file.Paths;
 import java.util.List;
@@ -25,15 +26,27 @@ public class App {
             System.out.print("(Enter exit to quit)>>>");
             Scanner scanner = new Scanner(System.in);
             String query = scanner.nextLine();
-            if(query.equals("exit") || query.equals("q")){
+            if(query.equals("exit") || query.equals("quit") || query.equals("q")){
                 break;
             }
-            UserMessage userMessage = new UserMessage(query);
-            chatState.addMessage(userMessage);
-            chatState.setCurrentPrompt(query);
-            if(CurrentEnvironment.log) {
-                System.out.printf("User:%s%n", JSONUtil.toJsonStr(userMessage));
+
+            if(query.equals("/compact")){
+                chatState.setMessageList(CompactUtils.compactContext(chatState.getMessageList()));
+                System.out.println("(answer)>>>" + "压缩已完成");
+                continue;
+            } else if(query.equals("/message")){
+                List<Message> messageList = chatState.getMessageList();
+                System.out.println("(answer)>>>" + JSONUtil.toJsonStr(messageList));
+                continue;
+            } else{
+                UserMessage userMessage = new UserMessage(query);
+                chatState.addMessage(userMessage);
+                chatState.setCurrentPrompt(query);
+                if(CurrentEnvironment.log) {
+                    System.out.printf("User:%s%n", JSONUtil.toJsonStr(userMessage));
+                }
             }
+
             AgentLoop.agentLoop(chatState);
             List<Message> messageList = chatState.getMessageList();
             Message message = messageList.get(messageList.size() - 1);

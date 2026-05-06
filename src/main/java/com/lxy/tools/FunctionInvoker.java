@@ -45,7 +45,7 @@ public class FunctionInvoker {
     }
 
     public static void main(String[] args) {
-        String json  = "{\"todo_items\":[[{\"id\":\"A\",\"text\":false}],[{\"id\":\"B\",\"text\":true}]]}";
+        String json  = "{\"todo_items\":[[[{\"id\":\"A\",\"text\":false}]],[[{\"id\":\"B\",\"text\":true}]]]}";
         json = JsonKeyConverter.underlineToCamelJson(json);
         System.out.println(json);
         TodoTool tool = new TodoTool();
