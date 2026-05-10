@@ -21,6 +21,7 @@ public class App {
 
 
     public static void main(String[] args ) {
+        CurrentEnvironment.init();
         ChatState chatState = new ChatState();
         while(true){
             System.out.print("(Enter exit to quit)>>>");

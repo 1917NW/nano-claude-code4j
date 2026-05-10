@@ -3,6 +3,7 @@ package com.lxy.tools;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.lxy.common.CurrentEnvironment;
 import com.lxy.common.JsonKeyConverter;
 import com.lxy.common.UserAnswerEnum;
 import com.lxy.message.impl.AssistantMessage;
@@ -255,7 +256,7 @@ public class ToolManager {
 
     public static JSONObject buildToolContext(){
         JSONObject context = new JSONObject();
-        context.set("mode", "plan");
+        context.set("mode", CurrentEnvironment.getProperty("permission.mode"));
         return context;
     }
 
