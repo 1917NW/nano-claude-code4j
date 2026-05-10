@@ -23,9 +23,6 @@ public class CurrentEnvironment {
                 .getResourceAsStream("application.properties")) {
             if (inputStream != null) {
                 APPLICATION_PROPERTIES.load(inputStream);
-                for (Object key : APPLICATION_PROPERTIES.keySet()) {
-                    System.out.println(key + "=" + APPLICATION_PROPERTIES.get(key));
-                }
             }
         } catch (IOException e) {
             throw new RuntimeException("Failed to load application.properties", e);

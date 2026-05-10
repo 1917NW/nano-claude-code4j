@@ -5,6 +5,10 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.lxy.common.CurrentEnvironment;
 import com.lxy.common.UserAnswerEnum;
+import com.lxy.hook.HookEvent;
+import com.lxy.hook.HookExitCodeEnum;
+import com.lxy.hook.HookResult;
+import com.lxy.hook.HookRunner;
 import com.lxy.http.FinishReasonEnum;
 import com.lxy.message.impl.AssistantMessage;
 import com.lxy.message.impl.ToolMessage;
@@ -63,11 +67,21 @@ public class AgentLoop {
                     } else {
                         rounds_since_todo++;
                     }
+
+                    // PreToolUse
+                    boolean blocked = preToolUse(toolCall, chatState);
+                    if(blocked){
+                        continue;
+                    }
+
                     ToolMessage toolMessage = new ToolMessage(toolCall.getId(), ToolManager.executeToolCall(toolCall));
                     if(CurrentEnvironment.log) {
                         System.out.printf("Tool:%s%n", JSONUtil.toJsonStr(toolMessage));
                     }
                     chatState.addMessage(toolMessage);
+
+                    // PostToolUse
+                    postToolUse(toolCall, chatState, toolMessage);
                 }
             }
 
@@ -78,6 +92,34 @@ public class AgentLoop {
             chatState.increaseTurnCount();
             chatState.setTransitionReason(finishReason);
         }
+    }
+
+    public static boolean preToolUse(AssistantMessage.ToolCall toolCall, ChatState chatState){
+        JSONObject hookPayLoad = new JSONObject();
+        AssistantMessage.Function tool = toolCall.getFunction();
+        hookPayLoad.set("tool_name", tool.getName());
+        hookPayLoad.set("input", tool.getArguments());
+        HookResult hookResult = HookRunner.runHooks(new HookEvent("PreToolUse", hookPayLoad));
+        if(HookExitCodeEnum.STOP.equals(hookResult.getExitCode())){
+            chatState.addMessage(new ToolMessage(toolCall.getId(), "工具执行被拦截，原因:" + hookResult.getMessage()));
+            return true;
+        }
+
+        if(HookExitCodeEnum.ADD_MESSAGE.equals(hookResult.getExitCode())){
+            chatState.addMessage(new UserMessage(hookResult.getMessage()));
+        }
+
+        return false;
+    }
+
+    public static void postToolUse(AssistantMessage.ToolCall toolCall, ChatState chatState, ToolMessage toolMessage){
+        JSONObject hookPayLoad = new JSONObject();
+        AssistantMessage.Function tool = toolCall.getFunction();
+        hookPayLoad.set("tool_name", tool.getName());
+        hookPayLoad.set("input", tool.getArguments());
+        hookPayLoad.set("output", toolMessage.getContent());
+
+        HookRunner.runHooks(new HookEvent("PostToolUse", hookPayLoad));
     }
 
 

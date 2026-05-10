@@ -6,6 +6,10 @@ import cn.hutool.json.JSONUtil;
 import com.lxy.common.CurrentEnvironment;
 import com.lxy.common.JsonKeyConverter;
 import com.lxy.common.UserAnswerEnum;
+import com.lxy.hook.HookEvent;
+import com.lxy.hook.HookExitCodeEnum;
+import com.lxy.hook.HookResult;
+import com.lxy.hook.HookRunner;
 import com.lxy.message.impl.AssistantMessage;
 import com.lxy.message.impl.ToolMessage;
 import com.lxy.permisson.BehaviorEnum;
@@ -219,8 +223,8 @@ public class ToolManager {
     }
 
     public static Object executeToolCall(AssistantMessage.ToolCall toolCall) {
-        JSONObject context = buildToolContext();
         AssistantMessage.Function tool = toolCall.getFunction();
+        JSONObject context = buildToolContext();
         DecisionResult decisionResult = PermissionSystem.checkPermission(tool.getName(), JSONUtil.parseObj(tool.getArguments()), context);
         if(BehaviorEnum.DENY.equals(decisionResult.getBehavior())){
             return String.format("权限禁止，原因是:%s", decisionResult.getReason());
@@ -254,11 +258,13 @@ public class ToolManager {
 
     }
 
+
     public static JSONObject buildToolContext(){
         JSONObject context = new JSONObject();
         context.set("mode", CurrentEnvironment.getProperty("permission.mode"));
         return context;
     }
+
 
 
 }
