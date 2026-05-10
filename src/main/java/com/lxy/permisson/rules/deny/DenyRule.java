@@ -8,17 +8,10 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public abstract class DenyRule extends PermissionRule {
-    String path;
-    String content;
 
-    public DenyRule(String path, String content) {
-        this.setBehavior(BehaviorEnum.DENY);
-        this.path = path;
-        this.content = content;
+    public BehaviorEnum getBehavior(){
+        return BehaviorEnum.DENY;
     }
 
-    public DenyRule() {
-        this.setBehavior(BehaviorEnum.DENY);
-    }
 
 }

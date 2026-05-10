@@ -100,7 +100,7 @@ public class AgentLoop {
         String toolRequest = String.format("请问您是否授权该工具的使用，工具名:%s, 工具参数:%s", tool.getName(), tool.getArguments());
         System.out.println("(Agent ASK)>>>" + toolRequest );
         while(true){
-            System.out.println("(User Answer, please enter y/n)");
+            System.out.print("(User Answer, please enter y/n)");
             Scanner scanner = new Scanner(System.in);
             String userAnswer = scanner.nextLine();
             UserAnswerEnum byValue = UserAnswerEnum.findByValue(userAnswer);

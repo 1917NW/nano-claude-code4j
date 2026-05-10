@@ -5,6 +5,7 @@ import com.lxy.permisson.rules.allow.AllowRule;
 import com.lxy.permisson.rules.deny.DenyRule;
 import com.lxy.permisson.rules.mode.ModeRule;
 import com.lxy.permisson.rules.deny.impl.BashDenyRule;
+import com.lxy.permisson.rules.mode.impl.WriteToolPlanModeRule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,8 @@ public class PermissionSystem {
 
     static {
         denyRules.add(new BashDenyRule());
+
+        modeRules.add(new WriteToolPlanModeRule());
     }
 
     public static DecisionResult checkPermission(String tool, JSONObject toolInput, JSONObject toolContext){
