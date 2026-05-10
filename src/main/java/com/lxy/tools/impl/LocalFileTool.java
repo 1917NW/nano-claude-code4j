@@ -22,20 +22,24 @@ public class LocalFileTool {
 
     @FunctionCall(name = "read_file", description = "读取某个文件的内容")
     public String readFile(@ParamProperty(description = "文件名，相对工作目录的路径") String fileName){
-        String safePath = safePath(fileName);
-        File file = new File(safePath);
-        if (!file.exists()){
-            return StrUtil.EMPTY;
+        try {
+            String safePath = safePath(fileName);
+            File file = new File(safePath);
+            if (!file.exists()) {
+                return StrUtil.EMPTY;
+            }
+
+            String text = FileUtil.readString(file, StandardCharsets.UTF_8);
+            String[] lines = text.split("\\n");
+
+            if (lines.length > readLineLimits) {
+                lines = Arrays.copyOf(lines, readLineLimits);
+            }
+
+            return String.join("\n", lines);
+        }catch (Exception e){
+            return "读取文件异常";
         }
-
-        String text = FileUtil.readString(file, StandardCharsets.UTF_8);
-        String[] lines = text.split("\\n");
-
-        if(lines.length > readLineLimits){
-            lines = Arrays.copyOf(lines, readLineLimits);
-        }
-
-        return String.join("\n", lines);
     }
 
     @FunctionCall(name = "write_file", description = "写入内容到某个文件")

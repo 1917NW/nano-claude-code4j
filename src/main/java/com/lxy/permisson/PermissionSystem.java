@@ -2,6 +2,7 @@ package com.lxy.permisson;
 
 import cn.hutool.json.JSONObject;
 import com.lxy.permisson.rules.allow.AllowRule;
+import com.lxy.permisson.rules.allow.impl.NoConditionPassRule;
 import com.lxy.permisson.rules.deny.DenyRule;
 import com.lxy.permisson.rules.mode.ModeRule;
 import com.lxy.permisson.rules.deny.impl.BashDenyRule;
@@ -22,6 +23,8 @@ public class PermissionSystem {
         denyRules.add(new BashDenyRule());
 
         modeRules.add(new WriteToolPlanModeRule());
+
+        allowRules.add(new NoConditionPassRule());
     }
 
     public static DecisionResult checkPermission(String tool, JSONObject toolInput, JSONObject toolContext){
