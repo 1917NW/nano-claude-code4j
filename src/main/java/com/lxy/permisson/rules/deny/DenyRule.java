@@ -1,6 +1,5 @@
-package com.lxy.permisson.rules;
+package com.lxy.permisson.rules.deny;
 
-import cn.hutool.json.JSONObject;
 import com.lxy.permisson.BehaviorEnum;
 import com.lxy.permisson.PermissionRule;
 import lombok.Data;

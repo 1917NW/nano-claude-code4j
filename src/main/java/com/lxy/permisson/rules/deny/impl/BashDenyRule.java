@@ -1,7 +1,7 @@
-package com.lxy.permisson.rules.impl;
+package com.lxy.permisson.rules.deny.impl;
 
 import cn.hutool.json.JSONObject;
-import com.lxy.permisson.rules.DenyRule;
+import com.lxy.permisson.rules.deny.DenyRule;
 
 public class BashDenyRule extends DenyRule {
     @Override

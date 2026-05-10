@@ -1,6 +1,6 @@
-package com.lxy.permisson.rules;
+package com.lxy.permisson.rules.mode;
 
-import cn.hutool.json.JSONObject;
+import com.lxy.permisson.ModeEnum;
 import com.lxy.permisson.PermissionRule;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class AllowRule extends PermissionRule {
-    String path;
-    String content;
+public abstract class ModeRule extends PermissionRule {
 
+    ModeEnum modeEnum;
 }

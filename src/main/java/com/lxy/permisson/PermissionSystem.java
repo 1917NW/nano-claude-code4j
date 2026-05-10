@@ -1,10 +1,10 @@
 package com.lxy.permisson;
 
 import cn.hutool.json.JSONObject;
-import com.lxy.permisson.rules.AllowRule;
-import com.lxy.permisson.rules.DenyRule;
-import com.lxy.permisson.rules.ModeRule;
-import com.lxy.permisson.rules.impl.BashDenyRule;
+import com.lxy.permisson.rules.allow.AllowRule;
+import com.lxy.permisson.rules.deny.DenyRule;
+import com.lxy.permisson.rules.mode.ModeRule;
+import com.lxy.permisson.rules.deny.impl.BashDenyRule;
 
 import java.util.ArrayList;
 import java.util.List;
