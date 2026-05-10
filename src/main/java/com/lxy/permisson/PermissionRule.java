@@ -1,15 +1,20 @@
 package com.lxy.permisson;
 
+import cn.hutool.json.JSONObject;
 import lombok.Data;
 
 @Data
-public class PermissionRule {
+public abstract class PermissionRule {
 
     String tool;
 
     BehaviorEnum behavior;
 
-    String path;
+    String reason;
 
-    String content;
+    public abstract boolean match(String toolName, JSONObject tool_input, JSONObject context);
+
+    public DecisionResult decision(){
+        return new DecisionResult(behavior, reason);
+    }
 }

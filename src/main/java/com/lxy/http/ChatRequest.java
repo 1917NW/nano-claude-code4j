@@ -1,8 +1,7 @@
-package com.lxy.model;
+package com.lxy.http;
 
 import cn.hutool.json.JSONObject;
 import com.lxy.message.Message;
-import com.lxy.tools.Tool;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,20 +1,26 @@
 package com.lxy;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.lxy.common.CurrentEnvironment;
-import com.lxy.model.FinishReasonEnum;
+import com.lxy.common.UserAnswerEnum;
+import com.lxy.http.FinishReasonEnum;
 import com.lxy.message.impl.AssistantMessage;
 import com.lxy.message.impl.ToolMessage;
 import com.lxy.message.impl.UserMessage;
 import com.lxy.model.ChatModel;
-import com.lxy.model.NonStreamChatResponse;
+import com.lxy.http.NonStreamChatResponse;
+import com.lxy.permisson.BehaviorEnum;
+import com.lxy.permisson.DecisionResult;
+import com.lxy.permisson.PermissionSystem;
 import com.lxy.skills.SkillRegistry;
 import com.lxy.state.ChatState;
 import com.lxy.tools.ToolManager;
 import com.lxy.utils.CompactUtils;
 
 import java.util.List;
+import java.util.Scanner;
 
 public class AgentLoop {
 
@@ -47,9 +53,28 @@ public class AgentLoop {
             }
 
             List<AssistantMessage.ToolCall> toolCalls = assistantMessage.getToolCalls();
+            JSONObject context = buildToolContext();
+
             if(CollectionUtil.isNotEmpty(toolCalls)){
                 for(AssistantMessage.ToolCall toolCall : toolCalls){
-                    if("todo_write".equals(toolCall.getFunction().getName())){
+                    AssistantMessage.Function tool = toolCall.getFunction();
+                    DecisionResult decisionResult = PermissionSystem.checkPermission(tool.getName(), JSONUtil.parseObj(tool.getArguments()), context);
+                    if(BehaviorEnum.DENY.equals(decisionResult.getBehavior())){
+                        String msg = String.format("权限禁止，原因是:%s", decisionResult.getReason());
+                        chatState.addMessage(new ToolMessage(toolCall.getId(), msg));
+                        continue;
+                    }
+
+                    if(BehaviorEnum.ASK.equals(decisionResult.getBehavior())){
+                        UserAnswerEnum userAnswer = askUser(tool);
+                        if(UserAnswerEnum.NO.equals(userAnswer)){
+                            chatState.addMessage(new ToolMessage(toolCall.getId(), "此操作已被用户禁止"));
+                            continue;
+                        }
+                    }
+
+
+                    if("todo_write".equals(tool.getName())){
                         rounds_since_todo = 0;
                     } else {
                         rounds_since_todo++;
@@ -70,6 +95,31 @@ public class AgentLoop {
             chatState.setTransitionReason(finishReason);
         }
     }
+
+    static UserAnswerEnum askUser(AssistantMessage.Function tool){
+        String toolRequest = String.format("请问您是否授权该工具的使用，工具名:%s, 工具参数:%s", tool.getName(), tool.getArguments());
+        System.out.println("(Agent ASK)>>>" + toolRequest );
+        while(true){
+            System.out.println("(User Answer, please enter y/n)");
+            Scanner scanner = new Scanner(System.in);
+            String userAnswer = scanner.nextLine();
+            UserAnswerEnum byValue = UserAnswerEnum.findByValue(userAnswer);
+            if(byValue == null){
+                continue;
+            }
+            return byValue;
+        }
+
+
+
+    }
+
+    public static JSONObject buildToolContext(){
+        JSONObject context = new JSONObject();
+        context.set("mode", "plan");
+        return context;
+    }
+
 
 
 

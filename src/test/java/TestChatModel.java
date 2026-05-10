@@ -1,13 +1,6 @@
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.lxy.AgentLoop;
-import com.lxy.message.impl.AssistantMessage;
-import com.lxy.message.impl.UserMessage;
 import com.lxy.model.ChatModel;
-import com.lxy.model.NonStreamChatResponse;
-import com.lxy.state.ChatState;
-import com.lxy.tools.Tool;
-import com.lxy.tools.ToolExecuteRequest;
 import com.lxy.tools.ToolManager;
 import org.junit.Test;
 

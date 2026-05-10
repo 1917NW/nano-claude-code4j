@@ -1,9 +1,7 @@
 package com.lxy.message.impl;
 
-import com.lxy.common.RoleType;
+import com.lxy.http.RoleType;
 import com.lxy.message.AbstractMessage;
-import com.lxy.message.Message;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

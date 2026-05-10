@@ -9,7 +9,7 @@ import com.lxy.message.impl.AssistantMessage;
 import com.lxy.message.impl.ToolMessage;
 import com.lxy.message.impl.UserMessage;
 import com.lxy.model.ChatModel;
-import com.lxy.model.NonStreamChatResponse;
+import com.lxy.http.NonStreamChatResponse;
 import com.lxy.tools.ToolManager;
 import lombok.extern.slf4j.Slf4j;
 

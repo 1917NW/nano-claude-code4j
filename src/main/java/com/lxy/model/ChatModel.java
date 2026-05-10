@@ -4,10 +4,10 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.lxy.common.JsonKeyConverter;
-import com.lxy.http.CurlLoggingInterceptor;
+import com.lxy.http.ChatRequest;
+import com.lxy.http.NonStreamChatResponse;
 import com.lxy.message.Message;
 import com.lxy.message.impl.SystemMessage;
-import com.lxy.tools.Tool;
 import okhttp3.*;
 
 import java.io.IOException;

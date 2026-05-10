@@ -1,4 +1,4 @@
-package com.lxy.common;
+package com.lxy.http;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.lxy.model;
+package com.lxy.http;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.lxy.message.impl.AssistantMessage;
