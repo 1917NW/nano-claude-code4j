@@ -4,7 +4,12 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.lxy.common.JsonKeyConverter;
+import com.lxy.common.UserAnswerEnum;
 import com.lxy.message.impl.AssistantMessage;
+import com.lxy.message.impl.ToolMessage;
+import com.lxy.permisson.BehaviorEnum;
+import com.lxy.permisson.DecisionResult;
+import com.lxy.permisson.PermissionSystem;
 import com.lxy.tools.annoation.FunctionCall;
 import com.lxy.tools.annoation.ObjectProperty;
 import com.lxy.tools.annoation.ParamProperty;
@@ -213,9 +218,46 @@ public class ToolManager {
     }
 
     public static Object executeToolCall(AssistantMessage.ToolCall toolCall) {
+        JSONObject context = buildToolContext();
+        AssistantMessage.Function tool = toolCall.getFunction();
+        DecisionResult decisionResult = PermissionSystem.checkPermission(tool.getName(), JSONUtil.parseObj(tool.getArguments()), context);
+        if(BehaviorEnum.DENY.equals(decisionResult.getBehavior())){
+            return String.format("权限禁止，原因是:%s", decisionResult.getReason());
+        }
+
+        if(BehaviorEnum.ASK.equals(decisionResult.getBehavior())){
+            UserAnswerEnum userAnswer = askUser(tool);
+            if(UserAnswerEnum.NO.equals(userAnswer)){
+                return "此操作已被用户禁止";
+            }
+        }
         ToolExecuteRequest toolExecuteRequest = new ToolExecuteRequest();
-        toolExecuteRequest.setToolName(toolCall.getFunction().getName());
-        toolExecuteRequest.setFunctionParam(JSONUtil.parseObj(JsonKeyConverter.underlineToCamelJson(toolCall.getFunction().getArguments())));
+        toolExecuteRequest.setToolName(tool.getName());
+        toolExecuteRequest.setFunctionParam(JSONUtil.parseObj(JsonKeyConverter.underlineToCamelJson(tool.getArguments())));
         return ToolManager.executeTool(toolExecuteRequest);
     }
+
+    static UserAnswerEnum askUser(AssistantMessage.Function tool){
+        String toolRequest = String.format("请问您是否授权该工具的使用，工具名:%s, 工具参数:%s", tool.getName(), tool.getArguments());
+        System.out.println("(Agent ASK)>>>" + toolRequest );
+        while(true){
+            System.out.print("(User Answer, please enter y/n)");
+            Scanner scanner = new Scanner(System.in);
+            String userAnswer = scanner.nextLine();
+            UserAnswerEnum byValue = UserAnswerEnum.findByValue(userAnswer);
+            if(byValue == null){
+                continue;
+            }
+            return byValue;
+        }
+
+    }
+
+    public static JSONObject buildToolContext(){
+        JSONObject context = new JSONObject();
+        context.set("mode", "plan");
+        return context;
+    }
+
+
 }

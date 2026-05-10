@@ -53,26 +53,10 @@ public class AgentLoop {
             }
 
             List<AssistantMessage.ToolCall> toolCalls = assistantMessage.getToolCalls();
-            JSONObject context = buildToolContext();
 
             if(CollectionUtil.isNotEmpty(toolCalls)){
                 for(AssistantMessage.ToolCall toolCall : toolCalls){
                     AssistantMessage.Function tool = toolCall.getFunction();
-                    DecisionResult decisionResult = PermissionSystem.checkPermission(tool.getName(), JSONUtil.parseObj(tool.getArguments()), context);
-                    if(BehaviorEnum.DENY.equals(decisionResult.getBehavior())){
-                        String msg = String.format("权限禁止，原因是:%s", decisionResult.getReason());
-                        chatState.addMessage(new ToolMessage(toolCall.getId(), msg));
-                        continue;
-                    }
-
-                    if(BehaviorEnum.ASK.equals(decisionResult.getBehavior())){
-                        UserAnswerEnum userAnswer = askUser(tool);
-                        if(UserAnswerEnum.NO.equals(userAnswer)){
-                            chatState.addMessage(new ToolMessage(toolCall.getId(), "此操作已被用户禁止"));
-                            continue;
-                        }
-                    }
-
 
                     if("todo_write".equals(tool.getName())){
                         rounds_since_todo = 0;
@@ -96,29 +80,7 @@ public class AgentLoop {
         }
     }
 
-    static UserAnswerEnum askUser(AssistantMessage.Function tool){
-        String toolRequest = String.format("请问您是否授权该工具的使用，工具名:%s, 工具参数:%s", tool.getName(), tool.getArguments());
-        System.out.println("(Agent ASK)>>>" + toolRequest );
-        while(true){
-            System.out.print("(User Answer, please enter y/n)");
-            Scanner scanner = new Scanner(System.in);
-            String userAnswer = scanner.nextLine();
-            UserAnswerEnum byValue = UserAnswerEnum.findByValue(userAnswer);
-            if(byValue == null){
-                continue;
-            }
-            return byValue;
-        }
 
-
-
-    }
-
-    public static JSONObject buildToolContext(){
-        JSONObject context = new JSONObject();
-        context.set("mode", "plan");
-        return context;
-    }
 
 
 
