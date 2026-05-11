@@ -33,6 +33,8 @@ public class ToolManager {
 
     static List<JSONObject> subToolList = new ArrayList<>();
 
+    static List<ToolInfo> subToolInfoList = new ArrayList<>();
+
     // <toolName, toolInvoke>
     static Map<String, FunctionInvoker> functionInvokeMap = new HashMap<>();
 
@@ -213,6 +215,7 @@ public class ToolManager {
         return subToolList;
     }
 
+
     public static Object executeTool(ToolExecuteRequest toolExecuteRequest) {
         String toolName = toolExecuteRequest.toolName;
         FunctionInvoker functionInvoker = functionInvokeMap.get(toolName);
@@ -263,6 +266,23 @@ public class ToolManager {
         JSONObject context = new JSONObject();
         context.set("mode", CurrentEnvironment.getProperty("permission.mode"));
         return context;
+    }
+
+    public static List<ToolInfo> getSubToolInfoList(){
+        List<ToolInfo> subToolInfoList = new ArrayList<>();
+        for(JSONObject subTool : subToolList){
+            ToolInfo toolInfo = new ToolInfo();
+            toolInfo.setName((String) subTool.getByPath("$.function.name"));
+            toolInfo.setDescription((String) subTool.getByPath("$.function.description"));
+            subToolInfoList.add(toolInfo);
+        }
+
+        return subToolInfoList;
+
+    }
+
+    public static void main(String[] args) {
+        System.out.println(JSONUtil.toJsonStr(getSubToolInfoList()));
     }
 
 

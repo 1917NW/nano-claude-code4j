@@ -31,9 +31,10 @@ public class AgentLoop {
     public static final int THRESHOLD = 50000;
 
     public static String SYSTEM_PROMPT = String.format("你是一个工作在%s目录下的Agent，要求如下：\n" +
-            "1.你需要对用户的任务进行规划，如果你不知道怎么做，可以使用run_subagent Tool委托给子代理执行，并且使用todo_write及时新增或更新规划的状态，记得在开始之前使用Todo Tool将要执行的步骤标记为IN_PROGRESS，当完成该步骤后，使用todo_write Tool将该步骤标记为COMPLETED。\n" +
-            "2.使用load_skill Tool来获取特定任务的知识，以下是可以使用的Skill：\n%s\n"+
-            "3.尽量使用工具执行，而不是文字说明。", CurrentEnvironment.WORK_DIR, JSONUtil.toJsonStr(SkillRegistry.getSkillDescription()));
+            "1.你需要对用户的任务进行规划，并且使用todo_write及时新增或更新规划的状态，记得在开始之前使用Todo Tool将要执行的步骤标记为IN_PROGRESS，当完成该步骤后，使用todo_write Tool将该步骤标记为COMPLETED。\n" +
+            "2.对于某个任务，如果你没有对应的tool去执行，你可以把tool的执行使用run_subagent工具委托给子代理去做，其中子代理的工具集为%s\n"+
+            "3.使用load_skill Tool来获取特定任务的知识，以下是可以使用的Skill：\n%s\n"+
+            "4.尽量使用工具执行，而不是文字说明。", CurrentEnvironment.WORK_DIR, JSONUtil.toJsonStr(ToolManager.getSubToolInfoList()), JSONUtil.toJsonStr(SkillRegistry.getSkillDescription()));
 
     public static void agentLoop(ChatState chatState){
         int rounds_since_todo = 0;

@@ -12,6 +12,7 @@ import java.util.List;
 public class AssistantMessage extends AbstractMessage {
 
     private String content;
+    private String reasoningContent;
     private List<ToolCall> toolCalls;
 
     @Data

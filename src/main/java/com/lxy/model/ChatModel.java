@@ -5,6 +5,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.lxy.common.JsonKeyConverter;
 import com.lxy.http.ChatRequest;
+import com.lxy.http.CurlLoggingInterceptor;
 import com.lxy.http.NonStreamChatResponse;
 import com.lxy.message.Message;
 import com.lxy.message.impl.SystemMessage;
@@ -21,7 +22,7 @@ public class ChatModel {
     public static ChatModel instance;
 
     static {
-        String model = "deepseek-chat";
+        String model = "deepseek-v4-pro";
         String baseUrl = "https://api.deepseek.com/chat/completions";
         String apiKey = System.getProperty("api.key");
         instance = new ChatModel(model, baseUrl, apiKey);
@@ -43,7 +44,7 @@ public class ChatModel {
     public NonStreamChatResponse chat(String systemPrompt, List<Message> messageList, List<JSONObject> toolList) {
         NonStreamChatResponse result = new NonStreamChatResponse();
         OkHttpClient client = new OkHttpClient.Builder()
-//                .addInterceptor(new CurlLoggingInterceptor())
+                .addInterceptor(new CurlLoggingInterceptor())
                 .connectTimeout(1, TimeUnit.MINUTES)
                 .readTimeout(5, TimeUnit.MINUTES)
                 .writeTimeout(5, TimeUnit.MINUTES)
