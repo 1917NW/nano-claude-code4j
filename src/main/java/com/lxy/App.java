@@ -39,6 +39,9 @@ public class App {
                 List<Message> messageList = chatState.getMessageList();
                 System.out.println("(answer)>>>" + JSONUtil.toJsonStr(messageList));
                 continue;
+            } else if(query.equals("/permission")){
+                // TODO 放权给llm
+                continue;
             } else{
                 UserMessage userMessage = new UserMessage(query);
                 chatState.addMessage(userMessage);

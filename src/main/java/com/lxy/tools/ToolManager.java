@@ -268,6 +268,19 @@ public class ToolManager {
         return context;
     }
 
+    public static List<ToolInfo> getParentToolInfoList(){
+        List<ToolInfo> parentToolInfoList = new ArrayList<>();
+        for(JSONObject parentTool : parentToolList){
+            ToolInfo toolInfo = new ToolInfo();
+            toolInfo.setName((String) parentTool.getByPath("$.function.name"));
+            toolInfo.setDescription((String) parentTool.getByPath("$.function.description"));
+            parentToolInfoList.add(toolInfo);
+        }
+
+        return parentToolInfoList;
+
+    }
+
     public static List<ToolInfo> getSubToolInfoList(){
         List<ToolInfo> subToolInfoList = new ArrayList<>();
         for(JSONObject subTool : subToolList){

@@ -10,6 +10,8 @@ import com.lxy.message.impl.ToolMessage;
 import com.lxy.message.impl.UserMessage;
 import com.lxy.model.ChatModel;
 import com.lxy.http.NonStreamChatResponse;
+import com.lxy.prompt.SystemPromptBuilder;
+import com.lxy.skills.SkillRegistry;
 import com.lxy.tools.ToolManager;
 import com.lxy.tools.annoation.FunctionCall;
 import com.lxy.tools.annoation.ParamProperty;
@@ -22,8 +24,20 @@ import java.util.Objects;
 @Slf4j
 public class SubAgentTool {
 
-    public static String SUBAGENT_SYSTEM_PROMPT =
-            String.format("你是一个工作在%s目录下的编程Agent，完成给定的任务，然后进行总结", CurrentEnvironment.WORK_DIR);
+    public static String SUBAGENT_SYSTEM_PROMPT;
+
+    static {
+        SystemPromptBuilder systemPromptBuilder = new SystemPromptBuilder();
+        String core = String.format("你是一个工作在%s目录下的子Agent，完成给定的任务，然后进行总结", CurrentEnvironment.WORK_DIR);
+
+        SUBAGENT_SYSTEM_PROMPT = systemPromptBuilder
+                .core(core)
+                .tools(ToolManager.getSubToolInfoList())
+                .skills(SkillRegistry.getSkillMetaInfo())
+                .build();
+
+        System.out.println(SUBAGENT_SYSTEM_PROMPT);
+    }
 
     @FunctionCall(name = "run_subagent", description = "启动一个拥有全新上下文的子代理，在一个干净的上下文里面执行一个子任务，然后返回一段总结")
     public String subAgent(@ParamProperty(description = "子任务的prompt") String prompt, @ParamProperty(description = "子任务的简短介绍") String description){
