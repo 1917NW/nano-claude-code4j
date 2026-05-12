@@ -18,4 +18,5 @@ public class ChatRequest {
     private List<Message> messages;
     private boolean stream;
     private List<JSONObject> tools;
+    private Integer maxTokens;
 }

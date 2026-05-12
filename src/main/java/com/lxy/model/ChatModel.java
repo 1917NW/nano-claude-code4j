@@ -41,7 +41,7 @@ public class ChatModel {
         this.apiKey = apiKey;
     }
 
-    public NonStreamChatResponse chat(String systemPrompt, List<Message> messageList, List<JSONObject> toolList) {
+    public NonStreamChatResponse chat(String systemPrompt, List<Message> messageList, List<JSONObject> toolList, Integer maxTokens) {
         NonStreamChatResponse result = new NonStreamChatResponse();
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new CurlLoggingInterceptor())
@@ -65,6 +65,7 @@ public class ChatModel {
                 .messages(messages)
                 .tools(toolList)
                 .stream(false)
+                .maxTokens(maxTokens)
                 .build();
         String camelJsoStr = JSONUtil.toJsonStr(chatRequest);
         String underlineJsonStr = JsonKeyConverter.camelToUnderlineJson(camelJsoStr);

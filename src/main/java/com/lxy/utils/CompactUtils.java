@@ -135,7 +135,7 @@ public class CompactUtils {
         if(CurrentEnvironment.log) {
             System.out.printf("User:%s%n", JSONUtil.toJsonStr(userMessage));
         }
-        NonStreamChatResponse summaryResponse = ChatModel.instance.chat(null, Collections.singletonList(userMessage), ToolManager.getParentTools());
+        NonStreamChatResponse summaryResponse = ChatModel.instance.chat(null, Collections.singletonList(userMessage), ToolManager.getParentTools(), 10000);
         AssistantMessage assistantMessage = summaryResponse.getAssistantMessage();
 
 

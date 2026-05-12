@@ -6,7 +6,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum FinishReasonEnum {
-
+    STOP("stop"),
+    LENGTH("length"),
     TOOL_CALL("tool_calls");
     private String reason;
 

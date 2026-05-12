@@ -55,7 +55,7 @@ public class SubAgentTool {
         // 子Agent最多循环 30次，防止子Agent无限循环
         int loop_count = 30;
         for(int i = 0; i < loop_count; i++){
-            NonStreamChatResponse chatResponse = ChatModel.instance.chat(SUBAGENT_SYSTEM_PROMPT, messages, ToolManager.getSubTools());
+            NonStreamChatResponse chatResponse = ChatModel.instance.chat(SUBAGENT_SYSTEM_PROMPT, messages, ToolManager.getSubTools(), 2000);
             lastAssistantMessage = chatResponse.getAssistantMessage();
             if(CurrentEnvironment.log){
                 System.out.printf("- SubAgnt:Assistant:%s%n", JSONUtil.toJsonStr(lastAssistantMessage));
@@ -80,7 +80,7 @@ public class SubAgentTool {
         }
 
         messages.add(new UserMessage("总结该任务的结果，<reminder>不需要执行过程，只需要执行结果</reminder>"));
-        NonStreamChatResponse chatResponse = ChatModel.instance.chat(SUBAGENT_SYSTEM_PROMPT, messages, ToolManager.getSubTools());
+        NonStreamChatResponse chatResponse = ChatModel.instance.chat(SUBAGENT_SYSTEM_PROMPT, messages, ToolManager.getSubTools(), 8000);
         lastAssistantMessage = chatResponse.getAssistantMessage();
         if(Objects.isNull(lastAssistantMessage)){
             return "(没有总结)";
