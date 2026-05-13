@@ -3,6 +3,7 @@ package com.lxy.task;
 import cn.hutool.core.collection.CollectionUtil;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -11,8 +12,8 @@ public class TaskRecord {
     String subject;
     String description;
     TaskStatusEnum status;
-    List<Integer> blockedBy;
-    List<Integer> blocks;
+    List<Integer> blockedBy = new ArrayList<>();
+    List<Integer> blocks = new ArrayList<>();
     String owner;
 
     public boolean isReady(){

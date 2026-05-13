@@ -46,6 +46,7 @@ public class ToolManager {
         addTool(parentToolList, TodoTool.class);
         addTool(parentToolList, SubAgentTool.class);
         addTool(parentToolList, SkillTool.class);
+        addTool(parentToolList, TaskTool.class);
     }
 
 

@@ -109,7 +109,7 @@ public class CompactUtils {
     // 压缩所有消息
     public static List<Message> compactContext(List<Message> messageList){
         try {
-            String fileName = String.format(TRANSCRIPT_DIR + "/transcript_%d", System.currentTimeMillis());
+            String fileName = String.format(TRANSCRIPT_DIR + "/transcript_%d", System.currentTimeMillis()) + ".jsonl";
             Path path = Paths.get(fileName);
             for (Message message : messageList) {
                 String line = JSONUtil.toJsonStr(message) + "\n";
