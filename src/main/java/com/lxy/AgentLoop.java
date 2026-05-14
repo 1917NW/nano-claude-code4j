@@ -5,6 +5,8 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.lxy.background.BackgroundManager;
+import com.lxy.background.Notification;
 import com.lxy.common.CurrentEnvironment;
 import com.lxy.hook.HookEvent;
 import com.lxy.hook.HookExitCodeEnum;
@@ -27,6 +29,7 @@ import com.lxy.tools.ToolManager;
 import com.lxy.utils.CompactUtils;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
@@ -58,6 +61,16 @@ public class AgentLoop {
         int rounds_since_todo = 0;
         RecoveryState recoveryState = chatState.getRecoveryState();
         while(true) {
+            List<Notification> notifications = BackgroundManager.instance.drainNotifications();
+            if(CollectionUtil.isNotEmpty(notifications)){
+                List<String> lines = new ArrayList<>();
+                for(Notification notification : notifications){
+                    lines.add(String.format("后台任务 taskId:%s status:%s result:%s", notification.getTaskId(), notification.getStatus(), notification.getResult()));
+                }
+                String completedBackgroundRunTask = String.join("\n", lines);
+                chatState.addMessage(new UserMessage(String.format("<background-result>\n%s\n</background-result>", completedBackgroundRunTask)));
+            }
+
             RecoveryDecision recoveryDecision = null;
             try {
                 CompactUtils.microCompact(chatState.getMessageList());

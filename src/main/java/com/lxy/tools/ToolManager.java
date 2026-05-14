@@ -47,6 +47,7 @@ public class ToolManager {
         addTool(parentToolList, SubAgentTool.class);
         addTool(parentToolList, SkillTool.class);
         addTool(parentToolList, TaskTool.class);
+        addTool(parentToolList, BackgroundRunTool.class);
     }
 
 
