@@ -9,6 +9,6 @@ public class ScheduleRecord {
     private String prompt;
     private boolean recurring;
     private boolean durable;
-    private Long createdAt;
-    private Long lastFiredAt;
+    private String createdAt;
+    private String lastFiredAt;
 }
