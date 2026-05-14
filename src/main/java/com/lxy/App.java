@@ -1,14 +1,13 @@
 package com.lxy;
 
 import cn.hutool.json.JSONUtil;
+import com.lxy.agent.AgentLoop;
 import com.lxy.common.CurrentEnvironment;
 import com.lxy.message.Message;
 import com.lxy.message.impl.UserMessage;
-import com.lxy.skills.SkillRegistry;
 import com.lxy.state.ChatState;
 import com.lxy.utils.CompactUtils;
 
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;

@@ -1,4 +1,4 @@
-package com.lxy;
+package com.lxy.agent;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.RandomUtil;
@@ -32,7 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Scanner;
 
 @Slf4j
 public class AgentLoop {
