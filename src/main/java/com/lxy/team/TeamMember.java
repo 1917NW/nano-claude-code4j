@@ -1,0 +1,10 @@
+package com.lxy.team;
+
+import lombok.Data;
+
+@Data
+public class TeamMember {
+    private String name;
+    private String role;
+    private String status;
+}
