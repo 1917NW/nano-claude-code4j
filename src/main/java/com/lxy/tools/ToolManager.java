@@ -217,12 +217,16 @@ public class ToolManager {
 
 
     public static Object executeTool(ToolExecuteRequest toolExecuteRequest) {
-        String toolName = toolExecuteRequest.toolName;
-        FunctionInvoker functionInvoker = functionInvokeMap.get(toolName);
-        if(Objects.isNull(functionInvoker)){
-            return null;
+        try {
+            String toolName = toolExecuteRequest.toolName;
+            FunctionInvoker functionInvoker = functionInvokeMap.get(toolName);
+            if (Objects.isNull(functionInvoker)) {
+                return null;
+            }
+            return functionInvoker.invoke(toolExecuteRequest.getFunctionParam());
+        }catch (Exception e){
+            return "执行工具异常:" + e.getMessage();
         }
-        return functionInvoker.invoke(toolExecuteRequest.getFunctionParam());
     }
 
     public static Object executeToolCall(AssistantMessage.ToolCall toolCall) {
