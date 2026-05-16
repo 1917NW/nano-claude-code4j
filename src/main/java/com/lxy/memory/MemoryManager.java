@@ -2,6 +2,9 @@ package com.lxy.memory;
 
 import cn.hutool.core.io.FileUtil;
 import com.lxy.common.CurrentEnvironment;
+import com.lxy.common.dto.MarkdownInfo;
+import com.lxy.utils.MarkdownParser;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,11 +18,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class MemoryManager {
 
     private String memoryDir;
 
-    public Map<String, Memory> memoryMap;
+    private Map<String, Memory> memoryMap;
+
+    private boolean loaded;
 
     public MemoryManager(){
         memoryDir = CurrentEnvironment.WORK_DIR + "/.memories";
@@ -29,6 +35,7 @@ public class MemoryManager {
         }
 
         memoryMap = new HashMap<>();
+        loaded = false;
     }
 
     public String saveMemory(Memory memory){
@@ -46,20 +53,66 @@ public class MemoryManager {
             Files.write(path, content.getBytes(StandardCharsets.UTF_8));
 
             memoryMap.put(memory.getName(), memory);
-            buildIndex();
             return String.format("保存%s记忆成功", memory.getName());
         } catch (IOException e) {
             return "保存记忆失败:" + e.getMessage();
         }
     }
 
-    // 构建索引
-    public void buildIndex(){
-        List<String> lines = new ArrayList<>();
-        lines.add("# Memory Index");
+    public Map<String, Memory> loadMemory(){
+        File file = new File(memoryDir);
+        String[] list = file.list();
+        if(list == null){
+            return memoryMap;
+        }
+
+        for(String fileName : list){
+            if("MEMORY.md".equals(fileName)){
+                continue;
+            }
+            File memoryFile = new File(fileName);
+            String memoryContent = FileUtil.readString(memoryFile, StandardCharsets.UTF_8);
+            MarkdownInfo parseResult = MarkdownParser.parse(memoryContent);
+            Map<String, String> headers = parseResult.getHeaders();
+            String content = parseResult.getContent();
+
+            Memory memory = new Memory();
+            memory.setName(headers.get("name"));
+            memory.setDescription(headers.get("description"));
+            memory.setContent(content);
+            memory.setType(headers.get("type"));
+            memoryMap.put(headers.get("name"), memory);
+        }
+
+        if(!memoryMap.isEmpty()){
+            log.info("[Memory loaded: {} memories from {}]", memoryMap.size(), memoryDir);
+        }
+        loaded = true;
+        return memoryMap;
     }
 
-    public Map<String, Memory> parseMemory(){
+    public String getMemoryPrompt(){
+        if(loaded && memoryMap.isEmpty()){
+            return "";
+        }
 
+        if(!loaded){
+            loadMemory();
+        }
+
+        if(memoryMap.isEmpty()){
+            return "";
+        }
+
+
+        List<String> sections = new ArrayList<>();
+        memoryMap.forEach((name, memory) -> {
+            sections.add(String.format("## [%s]", memory.getType()));
+            sections.add(String.format("### [%s]", memory.getDescription()));
+            sections.add(String.format("[%s]", memory.getContent()));
+        });
+
+        return String.join("\n", sections);
     }
+
 }
