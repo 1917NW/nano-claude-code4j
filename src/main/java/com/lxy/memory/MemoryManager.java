@@ -13,10 +13,8 @@ import java.nio.file.Files;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class MemoryManager {
@@ -26,6 +24,8 @@ public class MemoryManager {
     private Map<String, Memory> memoryMap;
 
     private boolean loaded;
+
+    public static MemoryManager instance = new MemoryManager();
 
     public MemoryManager(){
         memoryDir = CurrentEnvironment.WORK_DIR + "/.memories";
@@ -39,7 +39,7 @@ public class MemoryManager {
     }
 
     public String saveMemory(Memory memory){
-        String filePath = memoryDir + "/" + memory.getName();
+        String filePath = memoryDir + "/" + memory.getName() + ".md";
         Path path = Paths.get(filePath);
         String formatter = "---\n"+
                 "name:%s\n"+
@@ -49,7 +49,7 @@ public class MemoryManager {
                 "%s";
 
         try {
-            String content = String.format(formatter, memory.getName(), memory.getDescription(), memory.getType());
+            String content = String.format(formatter, memory.getName(), memory.getDescription(), memory.getType(),memory.getContent());
             Files.write(path, content.getBytes(StandardCharsets.UTF_8));
 
             memoryMap.put(memory.getName(), memory);
@@ -91,28 +91,8 @@ public class MemoryManager {
         return memoryMap;
     }
 
-    public String getMemoryPrompt(){
-        if(loaded && memoryMap.isEmpty()){
-            return "";
-        }
-
-        if(!loaded){
-            loadMemory();
-        }
-
-        if(memoryMap.isEmpty()){
-            return "";
-        }
-
-
-        List<String> sections = new ArrayList<>();
-        memoryMap.forEach((name, memory) -> {
-            sections.add(String.format("## [%s]", memory.getType()));
-            sections.add(String.format("### [%s]", memory.getDescription()));
-            sections.add(String.format("[%s]", memory.getContent()));
-        });
-
-        return String.join("\n", sections);
+    public static List<Memory> loadMemoryList(){
+        Collection<Memory> values = instance.loadMemory().values();
+        return new ArrayList<>(values);
     }
-
 }

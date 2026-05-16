@@ -35,8 +35,6 @@ public class SubAgentTool {
                 .tools(ToolManager.getSubToolInfoList())
                 .skills(SkillRegistry.getSkillMetaInfo())
                 .build();
-
-        System.out.println(SUBAGENT_SYSTEM_PROMPT);
     }
 
     @FunctionCall(name = "run_subagent", description = "启动一个拥有全新上下文的子代理，在一个干净的上下文里面执行一个子任务，然后返回一段总结")

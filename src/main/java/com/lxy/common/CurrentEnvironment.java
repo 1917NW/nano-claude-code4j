@@ -1,5 +1,7 @@
 package com.lxy.common;
 
+import com.lxy.memory.MemoryManager;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;

@@ -1,6 +1,8 @@
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.lxy.common.CurrentEnvironment;
 import com.lxy.model.ChatModel;
+import com.lxy.tools.ToolExecuteRequest;
 import com.lxy.tools.ToolManager;
 import org.junit.Test;
 
@@ -42,6 +44,13 @@ public class TestChatModel {
 
     @Test
     public void testAgentLoop(){
+        CurrentEnvironment.init();
 
+        String json = "  {\"memory\": {\"name\": \"偏好-喜欢苹果\", \"description\": \"用户表达喜欢苹果\", \"type\": \"user\", \"content\": \"用户喜欢苹果，表达了对苹果的偏好。\"}}";
+        ToolExecuteRequest request = new ToolExecuteRequest();
+        request.setFunctionParam(JSONUtil.parseObj(json));
+        request.setToolName("save_memory");
+        System.out.println(ToolManager.executeTool(request));
+        System.out.println(1);
     }
 }

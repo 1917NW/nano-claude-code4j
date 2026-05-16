@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class Memory {
-    @ObjectProperty(description = "简短的标识名称，比如(偏爱的标签，数据库)")
+    @ObjectProperty(description = "简短的标识名称，比如(偏爱的标签，数据库)，注意使用英文")
     private String name;
 
     @ObjectProperty(description = "一行该记忆的简短的总结")
