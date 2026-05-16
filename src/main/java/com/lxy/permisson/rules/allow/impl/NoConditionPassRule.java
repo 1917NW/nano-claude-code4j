@@ -16,6 +16,7 @@ public class NoConditionPassRule extends AllowRule {
         passToolRules.add("get_weather");
         passToolRules.add("run_subagent");
         passToolRules.add("todo_write");
+        passToolRules.add("save_memory");
     }
 
     @Override
@@ -33,4 +34,6 @@ public class NoConditionPassRule extends AllowRule {
     public String getReason() {
         return "";
     }
+
+
 }

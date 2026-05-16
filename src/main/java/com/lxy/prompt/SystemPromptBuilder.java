@@ -3,6 +3,7 @@ package com.lxy.prompt;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
+import com.lxy.memory.Memory;
 import com.lxy.skills.SkillDetail;
 import com.lxy.skills.SkillMetaInfo;
 import com.lxy.tools.Tool;
@@ -14,6 +15,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,7 +29,7 @@ public class SystemPromptBuilder {
 
     List<SkillMetaInfo> skills;
 
-    // Todo Memory
+    List<Memory> memories;
 
     // Todo CLAUDE.md
 
@@ -45,15 +48,21 @@ public class SystemPromptBuilder {
         return this;
     }
 
+    public SystemPromptBuilder memories(List<Memory> memories){
+        this.memories = memories;
+        return this;
+    }
+
     public String build(){
         return core + "\n"
                 + buildTools() + "\n"
-                + buildSkills();
+                + buildSkills() + "\n"
+                + buildMemories();
     }
 
     private String buildTools(){
         if(CollectionUtil.isEmpty(tools)){
-            return "没有可用的工具";
+            return "";
         }
 
         List<String> lines = new ArrayList<>();
@@ -66,7 +75,7 @@ public class SystemPromptBuilder {
 
     private String buildSkills(){
         if(CollectionUtil.isEmpty(skills)){
-            return "没有可用的Skills";
+            return "";
         }
 
         List<String> lines = new ArrayList<>();
@@ -75,5 +84,23 @@ public class SystemPromptBuilder {
         }
 
         return "以下是可以使用的Skill:\n" + String.join("\n", lines);
+    }
+
+    private String buildMemories(){
+        if(CollectionUtil.isEmpty(memories)){
+            return "";
+        }
+
+        Map<String, List<Memory>> memoryMap = memories.stream().collect(Collectors.groupingBy(Memory::getType));
+        List<String> sections = new ArrayList<>();
+        memoryMap.forEach((type, memoryList) -> {
+            sections.add(String.format("## [%s]", type));
+            memoryList.forEach(memory -> {
+                sections.add(String.format("### [%s]", memory.getDescription()));
+                sections.add(String.format("[%s]", memory.getContent()));
+            });
+        });
+
+        return "以下是之前对话保存的记忆，请在回答问题时进行参考，如果与当下的信息冲突，则以当下的信息为准\n" + String.join("\n", sections);
     }
 }

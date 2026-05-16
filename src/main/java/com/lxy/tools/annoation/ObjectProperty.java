@@ -7,4 +7,5 @@ import java.lang.annotation.RetentionPolicy;
 public @interface ObjectProperty {
     String description() default "";
     boolean required() default true;
+    String[] enums() default {};
 }
