@@ -3,6 +3,7 @@ package com.lxy.prompt;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
+import com.lxy.memory.Memory;
 import com.lxy.skills.SkillDetail;
 import com.lxy.skills.SkillMetaInfo;
 import com.lxy.tools.Tool;
@@ -26,7 +27,7 @@ public class SystemPromptBuilder {
 
     List<SkillMetaInfo> skills;
 
-    // Todo Memory
+    List<Memory> memories;
 
     // Todo CLAUDE.md
 
@@ -42,6 +43,11 @@ public class SystemPromptBuilder {
 
     public SystemPromptBuilder skills(List<SkillMetaInfo> skills){
         this.skills = skills;
+        return this;
+    }
+
+    public SystemPromptBuilder memories(List<Memory> memories){
+        this.memories = memories;
         return this;
     }
 
@@ -75,5 +81,16 @@ public class SystemPromptBuilder {
         }
 
         return "以下是可以使用的Skill:\n" + String.join("\n", lines);
+    }
+
+    private String buildMemories(){
+        List<String> sections = new ArrayList<>();
+        memoryMap.forEach((name, memory) -> {
+            sections.add(String.format("## [%s]", memory.getType()));
+            sections.add(String.format("### [%s]", memory.getDescription()));
+            sections.add(String.format("[%s]", memory.getContent()));
+        });
+
+        return String.join("\n", sections);
     }
 }
