@@ -1,26 +1,31 @@
-package com.lxy.skills;
+package com.lxy.utils;
+
+import com.lxy.common.dto.MarkdownInfo;
+import com.lxy.skills.SkillDetail;
+import com.lxy.skills.SkillMetaInfo;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public final class SkillMarkdownParser {
-
+public class MarkdownParser {
     private static final String FRONTMATTER_DELIMITER = "---";
 
     private static final String FRONTMATTER_END = "\n" + FRONTMATTER_DELIMITER + "\n";
 
-    private SkillMarkdownParser() {
+
+    private MarkdownParser() {
     }
 
-    public static SkillDetail parse(String skillMarkdown) {
-        if (skillMarkdown == null) {
+    public static MarkdownInfo parse(String markdownContent) {
+        if (markdownContent == null) {
             throw new IllegalArgumentException("skillMarkdown cannot be null");
         }
 
-        String normalized = normalizeLineEndings(skillMarkdown);
+        String normalized = normalizeLineEndings(markdownContent);
         SkillMetaInfo metaInfo = new SkillMetaInfo();
         String body = normalized;
 
+        MarkdownInfo markdownInfo = new MarkdownInfo();
         if (normalized.startsWith(FRONTMATTER_DELIMITER)) {
             int bodyStart = findFrontmatterEnd(normalized);
             if (bodyStart < 0) {
@@ -28,20 +33,18 @@ public final class SkillMarkdownParser {
             }
 
             String frontmatter = normalized.substring(FRONTMATTER_DELIMITER.length(), bodyStart).trim();
-            metaInfo = parseMeta(frontmatter);
+            markdownInfo.setHeaders(parseMeta(frontmatter));
             body = normalized.substring(bodyStart + FRONTMATTER_END.length());
             while (body.startsWith("\n")) {
                 body = body.substring(1);
             }
+            markdownInfo.setContent(body);
         }
 
-        SkillDetail detail = new SkillDetail();
-        detail.setMetaInfo(metaInfo);
-        detail.setSkillBody(body);
-        return detail;
+        return markdownInfo;
     }
 
-    private static SkillMetaInfo parseMeta(String frontmatter) {
+    private static Map<String, String> parseMeta(String frontmatter) {
         Map<String, String> attributes = new LinkedHashMap<>();
         if (!frontmatter.isEmpty()) {
             String[] lines = frontmatter.split("\n");
@@ -62,10 +65,7 @@ public final class SkillMarkdownParser {
             }
         }
 
-        SkillMetaInfo metaInfo = new SkillMetaInfo();
-        metaInfo.setName(attributes.get("name"));
-        metaInfo.setDescription(attributes.get("description"));
-        return metaInfo;
+        return attributes;
     }
 
     private static int findFrontmatterEnd(String markdown) {

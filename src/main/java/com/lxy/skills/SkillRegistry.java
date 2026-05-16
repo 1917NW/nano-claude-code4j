@@ -1,6 +1,8 @@
 package com.lxy.skills;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.lxy.common.dto.MarkdownInfo;
+import com.lxy.utils.MarkdownParser;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -95,7 +97,19 @@ public class SkillRegistry {
     private static SkillDetail parseSkillFile(Path skillPath) {
         try {
             String markdown = new String(Files.readAllBytes(skillPath), StandardCharsets.UTF_8);
-            return SkillMarkdownParser.parse(markdown);
+            MarkdownInfo parseResult = MarkdownParser.parse(markdown);
+
+            Map<String, String> headers = parseResult.getHeaders();
+            SkillMetaInfo metaInfo = new SkillMetaInfo();
+            if(CollectionUtil.isNotEmpty(headers)){
+                metaInfo.setDescription(parseResult.getHeaders().get("description"));
+                metaInfo.setName(parseResult.getHeaders().get("name"));
+            }
+
+            SkillDetail detail = new SkillDetail();
+            detail.setMetaInfo(metaInfo);
+            detail.setSkillBody(parseResult.getContent());
+            return detail;
         } catch (IOException e) {
             throw new IllegalStateException("Failed to read skill file: " + skillPath, e);
         }
