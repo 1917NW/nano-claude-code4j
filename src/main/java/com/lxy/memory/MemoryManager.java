@@ -60,17 +60,14 @@ public class MemoryManager {
     }
 
     public Map<String, Memory> loadMemory(){
-        File file = new File(memoryDir);
-        String[] list = file.list();
+        File dir = new File(memoryDir);
+        File[] list = dir.listFiles();
         if(list == null){
             return memoryMap;
         }
 
-        for(String fileName : list){
-            if("MEMORY.md".equals(fileName)){
-                continue;
-            }
-            File memoryFile = new File(fileName);
+        for(File memoryFile : list){
+
             String memoryContent = FileUtil.readString(memoryFile, StandardCharsets.UTF_8);
             MarkdownInfo parseResult = MarkdownParser.parse(memoryContent);
             Map<String, String> headers = parseResult.getHeaders();

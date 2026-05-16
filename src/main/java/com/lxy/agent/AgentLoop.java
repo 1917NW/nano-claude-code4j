@@ -13,6 +13,7 @@ import com.lxy.hook.HookExitCodeEnum;
 import com.lxy.hook.HookResult;
 import com.lxy.hook.HookRunner;
 import com.lxy.http.FinishReasonEnum;
+import com.lxy.memory.MemoryManager;
 import com.lxy.message.impl.AssistantMessage;
 import com.lxy.message.impl.ToolMessage;
 import com.lxy.message.impl.UserMessage;
@@ -43,17 +44,28 @@ public class AgentLoop {
     static {
         SystemPromptBuilder systemPromptBuilder = new SystemPromptBuilder();
         String core = String.format("你是一个工作在%s目录下的Agent，要求如下：\n" +
-        "1.你需要对用户的任务进行规划，并且使用todo_write及时新增或更新规划的状态，记得在开始之前使用Todo Tool将要执行的步骤标记为IN_PROGRESS，当完成该步骤后，使用todo_write Tool将该步骤标记为COMPLETED。\n" +
+                "1.你需要对用户的任务进行规划，并且使用todo_write及时新增或更新规划的状态，记得在开始之前使用Todo Tool将要执行的步骤标记为IN_PROGRESS，当完成该步骤后，使用todo_write Tool将该步骤标记为COMPLETED。\n" +
                 "2.对于某个任务，如果你没有对应的tool去执行，你可以把tool的执行使用run_subagent工具委托给子代理去做，其中子代理的工具集为%s\n"+
-                "3.如果某个命令可能是一个执行时间比较长的命令，可以使用run_background_task工具在后台执行\n"+
-                "4.使用load_skill Tool来获取特定任务的知识\n"+
+                "3.使用load_skill Tool来获取特定任务的知识\n" +
+                "4.你应该在特定时候保存记忆：\n" +
+                "- 用户表达了一个偏好（“我喜欢用 tab 缩进”“总是使用 pytest”）-> 保存的记忆类型为：user\n" +
+                "- 用户纠正了你（“不要这样做 X”“刚才那样是错的，因为……”）-> 保存的记忆类型为：feedback\n" +
+                "- 你了解到一个无法仅从当前代码中轻易推断出的项目事实（例如：某条规则存在是出于合规要求，或者某个遗留模块因为业务原因不能修改）-> 保存的记忆类型为：project\n" +
+                "- 你知道了某个外部资源的位置（工单看板、仪表盘、文档 URL）-> 保存的记忆类型为：reference\n" +
+                "你不应该保存的记忆：\n" +
+                "- 任何可以很容易从代码中推导出来的信息（函数签名、文件结构、目录布局）\n" +
+                "- 临时性的任务状态（当前分支、打开的 PR 编号、当前待办事项）\n" +
+                "- 密钥或凭证（API key、密码）\n"+
                 "5.尽量使用工具执行，而不是文字说明。", CurrentEnvironment.WORK_DIR, JSONUtil.toJsonStr(ToolManager.getSubToolInfoList()));
 
         SYSTEM_PROMPT = systemPromptBuilder
-                            .core(core)
-                            .tools(ToolManager.getParentToolInfoList())
-                            .skills(SkillRegistry.getSkillMetaInfo())
-                            .build();
+                .core(core)
+                .tools(ToolManager.getParentToolInfoList())
+                .skills(SkillRegistry.getSkillMetaInfo())
+                .memories(MemoryManager.loadMemoryList())
+                .build();
+
+        System.out.println(SYSTEM_PROMPT);
     }
 
 

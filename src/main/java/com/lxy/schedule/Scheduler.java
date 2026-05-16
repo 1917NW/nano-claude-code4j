@@ -9,6 +9,6 @@ public class Scheduler {
         scheduleRecord.setCron(cron);
         scheduleRecord.setCron(cron);
         scheduleRecord.setCreatedAt(LocalDateTime.now().toString());
-
+        return "";
     }
 }
