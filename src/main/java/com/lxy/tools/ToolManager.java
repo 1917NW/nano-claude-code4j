@@ -50,6 +50,7 @@ public class ToolManager {
         addTool(parentToolList, TaskTool.class);
         addTool(parentToolList, BackgroundRunTool.class);
         addTool(parentToolList, MemoryTool.class);
+        addTool(parentToolList, SchedulerTool.class);
     }
 
 

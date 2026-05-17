@@ -24,6 +24,7 @@ import com.lxy.recovery.RecoveryConstant;
 import com.lxy.recovery.RecoveryDecision;
 import com.lxy.recovery.RecoveryKindEnum;
 import com.lxy.recovery.RecoveryState;
+import com.lxy.schedule.CronScheduler;
 import com.lxy.skills.SkillRegistry;
 import com.lxy.state.ChatState;
 import com.lxy.tools.ToolManager;
@@ -56,7 +57,8 @@ public class AgentLoop {
                 "- 任何可以很容易从代码中推导出来的信息（函数签名、文件结构、目录布局）\n" +
                 "- 临时性的任务状态（当前分支、打开的 PR 编号、当前待办事项）\n" +
                 "- 密钥或凭证（API key、密码）\n"+
-                "5.尽量使用工具执行，而不是文字说明。", CurrentEnvironment.WORK_DIR, JSONUtil.toJsonStr(ToolManager.getSubToolInfoList()));
+                "5.如果用户提出了定时任务或者延时任务的需求，你需要从中提取任务信息和cron表达式，你可以使用 schedule_create 来创建未来要执行的任务。任务会自动触发，并将其提示内容注入到当前对话中。对于延时任务，你需要将cron表达式和设置recurring字段为false一起使用，recurring字段为false表明这是一个一次性的任务\n"+
+                "6.尽量使用工具执行，而不是文字说明。", CurrentEnvironment.WORK_DIR, JSONUtil.toJsonStr(ToolManager.getSubToolInfoList()));
 
         SYSTEM_PROMPT = systemPromptBuilder
                 .core(core)
@@ -81,6 +83,13 @@ public class AgentLoop {
                 }
                 String completedBackgroundRunTask = String.join("\n", lines);
                 chatState.addMessage(new UserMessage(String.format("<background-result>\n%s\n</background-result>", completedBackgroundRunTask)));
+            }
+
+            List<String> scheduleTasks = CronScheduler.instance.drainNotification();
+            if(CollectionUtil.isNotEmpty(scheduleTasks)){
+                for(String scheduleTask : scheduleTasks){
+                    chatState.addMessage(new UserMessage(scheduleTask));
+                }
             }
 
             RecoveryDecision recoveryDecision = null;
