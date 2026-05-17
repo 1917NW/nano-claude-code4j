@@ -17,6 +17,8 @@ public class NoConditionPassRule extends AllowRule {
         passToolRules.add("run_subagent");
         passToolRules.add("todo_write");
         passToolRules.add("save_memory");
+        passToolRules.add("get_local_date_time");
+        passToolRules.add("schedule_create");
     }
 
     @Override

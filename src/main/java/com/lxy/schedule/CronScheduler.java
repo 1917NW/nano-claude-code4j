@@ -131,15 +131,15 @@ public class CronScheduler {
                 } else {
                     time = scheduleRecord.getLastFiredAt();
                 }
-                LocalDateTime localDateTime = CronUtils.nextTime(scheduleRecord.getCron(), time);
-                if (localDateTime.isBefore(LocalDateTime.now())) {
+                LocalDateTime nextTime = CronUtils.nextTime(scheduleRecord.getCron(), time);
+                if (nextTime.isBefore(LocalDateTime.now())) {
                     queue.add(String.format("[Scheduled task %s]:%s", scheduleRecord.getId(), scheduleRecord.getPrompt()));
                     scheduleRecord.setLastFiredAt(LocalDateTime.now());
                     log.info("[Cron] Fired: {}", scheduleRecord.getId());
-                }
 
-                if (!scheduleRecord.isRecurring()) {
-                    oneShotTasks.add(scheduleRecord.getId());
+                    if (!scheduleRecord.isRecurring()) {
+                        oneShotTasks.add(scheduleRecord.getId());
+                    }
                 }
             }
 

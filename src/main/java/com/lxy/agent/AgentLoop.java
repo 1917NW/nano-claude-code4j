@@ -216,7 +216,7 @@ public class AgentLoop {
 
 
     public static RecoveryDecision chooseRecovery(String finishReason, String errorText){
-        if(Objects.isNull(finishReason) && Objects.isNull(errorText)){
+        if((Objects.isNull(finishReason) || FinishReasonEnum.TOOL_CALL.isEqual(finishReason) || FinishReasonEnum.STOP.isEqual(finishReason)) && Objects.isNull(errorText)){
             return null;
         }
 

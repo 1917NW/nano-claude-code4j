@@ -51,6 +51,7 @@ public class ToolManager {
         addTool(parentToolList, BackgroundRunTool.class);
         addTool(parentToolList, MemoryTool.class);
         addTool(parentToolList, SchedulerTool.class);
+        addTool(parentToolList, LocalDateTimeTool.class);
     }
 
 
