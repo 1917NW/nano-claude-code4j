@@ -1,5 +1,6 @@
 package com.lxy.tools;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -48,6 +49,9 @@ public class ToolManager {
         addTool(parentToolList, SkillTool.class);
         addTool(parentToolList, TaskTool.class);
         addTool(parentToolList, BackgroundRunTool.class);
+        addTool(parentToolList, MemoryTool.class);
+        addTool(parentToolList, SchedulerTool.class);
+        addTool(parentToolList, LocalDateTimeTool.class);
     }
 
 
@@ -108,7 +112,7 @@ public class ToolManager {
             }
 
             String name = param.getName();
-            properties.set(name, propertyJson(param.getType(), genericTypes[i], paramProperty.description()));
+            properties.set(name, propertyJson(param.getType(), genericTypes[i], paramProperty.description(), paramProperty.enums()));
 
             if(paramProperty.required()){
                 requiredParam.add(name);
@@ -121,7 +125,7 @@ public class ToolManager {
     }
 
     // TODO:1.Map参数没有解析
-    private static JSONObject propertyJson(Class<?> type, Type genericType, String description){
+    private static JSONObject propertyJson(Class<?> type, Type genericType, String description, String[] enums){
         JSONObject properties = new JSONObject();
 
         if(type == String.class || type == Character.class || type == char.class){
@@ -143,13 +147,13 @@ public class ToolManager {
 
             if(elementType instanceof Class<?>){
                 Class<?> listElementClass = (Class<?>) elementType;
-                properties.set("items", propertyJson(listElementClass, listElementClass, StrUtil.EMPTY));
+                properties.set("items", propertyJson(listElementClass, listElementClass, StrUtil.EMPTY, null));
             }
 
             if(elementType instanceof ParameterizedType){
                 ParameterizedType parameterizedType = (ParameterizedType) elementType;
                 Type rawType = parameterizedType.getRawType();
-                properties.set("items", propertyJson((Class<?>) rawType, parameterizedType, StrUtil.EMPTY));
+                properties.set("items", propertyJson((Class<?>) rawType, parameterizedType, StrUtil.EMPTY, null));
             }
 
         } else if(Map.class.isAssignableFrom(type)){
@@ -172,7 +176,7 @@ public class ToolManager {
                     if (Objects.isNull(objectProperty)) {
                         continue;
                     }
-                    filedProperties.set(field.getName(), propertyJson(field.getType(), field.getGenericType(), objectProperty.description()));
+                    filedProperties.set(field.getName(), propertyJson(field.getType(), field.getGenericType(), objectProperty.description(), objectProperty.enums()));
 
                     if(objectProperty.required()){
                         requiredFieldList.add(field.getName());
@@ -185,6 +189,9 @@ public class ToolManager {
 
         if(StrUtil.isNotBlank(description)) {
             properties.set("description", description);
+        }
+        if(Objects.nonNull(enums) && enums.length > 0){
+            properties.set("enums", enums);
         }
         return properties;
     }
@@ -219,12 +226,16 @@ public class ToolManager {
 
 
     public static Object executeTool(ToolExecuteRequest toolExecuteRequest) {
-        String toolName = toolExecuteRequest.toolName;
-        FunctionInvoker functionInvoker = functionInvokeMap.get(toolName);
-        if(Objects.isNull(functionInvoker)){
-            return null;
+        try {
+            String toolName = toolExecuteRequest.toolName;
+            FunctionInvoker functionInvoker = functionInvokeMap.get(toolName);
+            if (Objects.isNull(functionInvoker)) {
+                return null;
+            }
+            return functionInvoker.invoke(toolExecuteRequest.getFunctionParam());
+        }catch (Exception e){
+            return "执行工具异常:" + e.getMessage();
         }
-        return functionInvoker.invoke(toolExecuteRequest.getFunctionParam());
     }
 
     public static Object executeToolCall(AssistantMessage.ToolCall toolCall) {
