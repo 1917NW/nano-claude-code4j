@@ -7,6 +7,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.lxy.background.BackgroundManager;
 import com.lxy.background.Notification;
+import com.lxy.cladue.ClaudeMdLoader;
 import com.lxy.common.CurrentEnvironment;
 import com.lxy.hook.HookEvent;
 import com.lxy.hook.HookExitCodeEnum;
@@ -65,6 +66,7 @@ public class AgentLoop {
                 .tools(ToolManager.getParentToolInfoList())
                 .skills(SkillRegistry.getSkillMetaInfo())
                 .memories(MemoryManager.loadMemoryList())
+                .claudeMd(ClaudeMdLoader.loadClaudeMdFile())
                 .build();
 
         System.out.println(SYSTEM_PROMPT);

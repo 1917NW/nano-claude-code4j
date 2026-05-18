@@ -2,6 +2,7 @@ package com.lxy.prompt;
 
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.lxy.memory.Memory;
 import com.lxy.skills.SkillDetail;
@@ -31,6 +32,8 @@ public class SystemPromptBuilder {
 
     List<Memory> memories;
 
+    String claudeMd;
+
     // Todo CLAUDE.md
 
     public SystemPromptBuilder core(String core){
@@ -53,11 +56,17 @@ public class SystemPromptBuilder {
         return this;
     }
 
+    public SystemPromptBuilder claudeMd(String claudeMd){
+        this.claudeMd = claudeMd;
+        return this;
+    }
+
     public String build(){
         return core + "\n"
                 + buildTools() + "\n"
                 + buildSkills() + "\n"
-                + buildMemories();
+                + buildMemories() + "\n"
+                + buildClaudeMd();
     }
 
     private String buildTools(){
@@ -102,5 +111,12 @@ public class SystemPromptBuilder {
         });
 
         return "以下是之前对话保存的记忆，请在回答问题时进行参考，如果与当下的信息冲突，则以当下的信息为准\n" + String.join("\n", sections);
+    }
+
+    private String buildClaudeMd(){
+        if(StrUtil.isBlank(claudeMd)){
+            return "";
+        }
+        return "该项目的指令链条:\n" + claudeMd;
     }
 }
