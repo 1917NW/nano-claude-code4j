@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "serverA": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["server.py"],
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      }
+    },
+    "serverB": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["server.py"],
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      }
+    }
+  }
+}

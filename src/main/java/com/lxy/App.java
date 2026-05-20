@@ -1,8 +1,13 @@
 package com.lxy;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.lxy.agent.AgentLoop;
 import com.lxy.common.CurrentEnvironment;
+import com.lxy.mcp.McpClient;
+import com.lxy.mcp.McpConfig;
+import com.lxy.mcp.McpToolRouter;
+import com.lxy.mcp.PluginLoader;
 import com.lxy.message.Message;
 import com.lxy.message.impl.UserMessage;
 import com.lxy.schedule.CronScheduler;
@@ -10,6 +15,7 @@ import com.lxy.state.ChatState;
 import com.lxy.utils.CompactUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -24,6 +30,19 @@ public class App {
         try {
             CurrentEnvironment.init();
             CronScheduler.instance.start();
+            PluginLoader pluginLoader = new PluginLoader(System.getProperty("user.dir") + "/plugins");
+            List<String> foundList = pluginLoader.scan();
+            if(CollectionUtil.isNotEmpty(foundList)){
+                Map<String, McpConfig> mcpServer = pluginLoader.getMcpServer();
+                for (Map.Entry<String, McpConfig> entry : mcpServer.entrySet()) {
+                    McpConfig mcpConfig = entry.getValue();
+                    McpClient mcpClient = new McpClient(mcpConfig);
+                    if(mcpClient.connect()){
+                        McpToolRouter.instance.registerMcpClient(mcpClient);
+                    }
+                }
+            }
+
             ChatState chatState = new ChatState();
             while (true) {
                 System.out.print("(Enter exit to quit)>>>");

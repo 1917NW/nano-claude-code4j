@@ -11,6 +11,7 @@ import com.lxy.hook.HookEvent;
 import com.lxy.hook.HookExitCodeEnum;
 import com.lxy.hook.HookResult;
 import com.lxy.hook.HookRunner;
+import com.lxy.mcp.McpToolRouter;
 import com.lxy.message.impl.AssistantMessage;
 import com.lxy.message.impl.ToolMessage;
 import com.lxy.permisson.BehaviorEnum;
@@ -217,7 +218,10 @@ public class ToolManager {
 
 
     public static List<JSONObject> getParentTools() {
-        return parentToolList;
+        List<JSONObject> parentTools = new ArrayList<>();
+        parentTools.addAll(parentToolList);
+        parentTools.addAll(McpToolRouter.instance.getAllMcpTools());
+        return parentTools;
     }
 
     public static List<JSONObject> getSubTools() {
@@ -283,7 +287,7 @@ public class ToolManager {
 
     public static List<ToolInfo> getParentToolInfoList(){
         List<ToolInfo> parentToolInfoList = new ArrayList<>();
-        for(JSONObject parentTool : parentToolList){
+        for(JSONObject parentTool : getParentTools()){
             ToolInfo toolInfo = new ToolInfo();
             toolInfo.setName((String) parentTool.getByPath("$.function.name"));
             toolInfo.setDescription((String) parentTool.getByPath("$.function.description"));
@@ -296,7 +300,7 @@ public class ToolManager {
 
     public static List<ToolInfo> getSubToolInfoList(){
         List<ToolInfo> subToolInfoList = new ArrayList<>();
-        for(JSONObject subTool : subToolList){
+        for(JSONObject subTool : getSubTools()){
             ToolInfo toolInfo = new ToolInfo();
             toolInfo.setName((String) subTool.getByPath("$.function.name"));
             toolInfo.setDescription((String) subTool.getByPath("$.function.description"));

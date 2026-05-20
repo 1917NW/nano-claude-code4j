@@ -18,32 +18,18 @@ public class FunctionTool extends Tool {
         this.type ="function";
     }
 
+    public FunctionTool(Function function){
+        this.function = function;
+        this.type ="function";
+    }
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    static class Function{
+    public static class Function{
         String name;
         String description;
         JSONObject parameters;
 
     }
-
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    static class FunctionParam {
-        String type = "object";
-        Map<String, Property> properties;
-        List<String> required;
-    }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    static class Property {
-        String description;
-        String type;
-    }
-
 }
