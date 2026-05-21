@@ -258,7 +258,7 @@ public class ToolManager {
         }
 
         if(McpToolRouter.instance.isMcpTool(tool.getName())){
-            return McpToolRouter.instance.callMcpServer(tool.getName(), JSONUtil.parseObj(tool.getArguments()))
+            return McpToolRouter.instance.callMcpServer(tool.getName(), JSONUtil.parseObj(tool.getArguments()));
         }
 
         ToolExecuteRequest toolExecuteRequest = new ToolExecuteRequest();
