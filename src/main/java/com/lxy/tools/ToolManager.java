@@ -256,6 +256,11 @@ public class ToolManager {
                 return "此操作已被用户禁止";
             }
         }
+
+        if(McpToolRouter.instance.isMcpTool(tool.getName())){
+            return McpToolRouter.instance.callMcpServer(tool.getName(), JSONUtil.parseObj(tool.getArguments()))
+        }
+
         ToolExecuteRequest toolExecuteRequest = new ToolExecuteRequest();
         toolExecuteRequest.setToolName(tool.getName());
         toolExecuteRequest.setFunctionParam(JSONUtil.parseObj(JsonKeyConverter.underlineToCamelJson(tool.getArguments())));
