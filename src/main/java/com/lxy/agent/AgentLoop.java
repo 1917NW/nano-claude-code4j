@@ -164,6 +164,7 @@ public class AgentLoop {
             }
 
             if(Objects.isNull(recoveryDecision)){
+                // TODO 更新持久化快照
                 recoveryState.refresh();
                 continue;
             }
