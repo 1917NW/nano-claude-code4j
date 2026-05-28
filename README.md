@@ -25,3 +25,5 @@ java -Dapi.key=${api.key}
 
 7.multi-agent
 
+8.skill热更新
+
