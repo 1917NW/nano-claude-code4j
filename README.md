@@ -27,3 +27,7 @@ java -Dapi.key=${api.key}
 
 8.skill热更新
 
+9.记忆系统
+
+10.agent teams
+
